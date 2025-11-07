@@ -18,10 +18,10 @@ public class Inventory {
     public void displayInventory() {
         System.out.println("\nInventory: ");
 
-        if (inventory.isEmpty()) {
+        if (items.isEmpty()) {
             System.out.println("Empty.");
         } else {
-            for (Item i : inventory) {
+            for (Item i : items) {
                 System.out.println("-  " + i.getName());
             }
         }
