@@ -1,27 +1,12 @@
-// package-less, default package. Make this a separate file Item.java in the same folder.
-public class Item {
-    private String name;
-    private String description;
+public abstract class Item {
+    protected String id;
+    protected String name;
+    protected String description;
 
-    public Item(String name) {
-        this(name, "");
+    public Item(String id, String name, String description) {
+        this.id = id; this.name = name; this.description = description;
     }
-
-    public Item(String name, String description) {
-        this.name = name;
-        this.description = description;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    @Override
-    public String toString() {
-        return name + (description.isEmpty() ? "" : " - " + description);
-    }
+    public String getName() { return name; }
+    public String getDescription() { return description; }
+    public String getId() { return id; }
 }
