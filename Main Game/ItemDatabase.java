@@ -7,6 +7,8 @@ public class ItemDatabase {
         // Weapons
         prototypes.put("iron_sword", new Weapon("iron_sword","Iron Sword","A sturdy iron sword.", 6, 0.05, 1.5, 100, ElementType.NONE));
         prototypes.put("fire_staff", new Weapon("fire_staff","Fire Staff","A staff imbued with flame.", 5, 0.08, 1.6, 100, ElementType.FIRE));
+        prototypes.put("suayansdick", new Weapon("suayansdick","Suayan's dick","A short dick", 999, 100, 2, 9999, ElementType.NONE));
+
         // Armor
         prototypes.put("leather_armor", new Armor("leather_armor","Leather Armor","Light protective leather.", 1, 0.05, 100));
         prototypes.put("chain_armor", new Armor("chain_armor","Chain Armor","Better protection.", 3, 0.10, 100));

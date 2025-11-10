@@ -1,27 +1,59 @@
+// InstanceGame.java
 import java.util.*;
 
 public class InstanceGame {
     private Scanner in;
     private Player player;
-    private final int WIDTH = 6;
-    private final int HEIGHT = 6;
+    private final int WIDTH = 5; // ~20 rooms (5x4)
+    private final int HEIGHT = 4;
     private boolean[][] explored;
+    private int exploredCount = 0;
+    private final int totalRooms = WIDTH * HEIGHT;
     private Random rnd = new Random();
 
+    // Default constructor (normal play)
     public InstanceGame(Scanner in) {
+        this(in, false);
+    }
+
+    // Overloaded constructor: if devMode==true, create a high-powered player for testing
+    public InstanceGame(Scanner in, boolean devMode) {
         this.in = in;
         this.explored = new boolean[HEIGHT][WIDTH];
-        this.player = new Player("Hero", 30, 5, 4);
-        // give starter items
-        player.getInventory().add(ItemDatabase.createWeapon("iron_sword"));
-        player.equipWeapon((Weapon)player.getInventory().get(0));
-        player.getInventory().add(ItemDatabase.createArmor("leather_armor"));
-        player.equipArmor((Armor)player.getInventory().get(1));
-        player.getInventory().add(ItemDatabase.createConsumable("hp_potion"));
-        player.getInventory().add(ItemDatabase.createRelic("relic_plus_ap"));
-        // start in center
-        player.setPosition(WIDTH/2, HEIGHT/2);
-        explored[player.getY()][player.getX()] = true;
+
+        if (!devMode) {
+            this.player = new Player("Hero", 30, 5, 4);
+            // give starter items
+            player.getInventory().add(ItemDatabase.createWeapon("iron_sword"));
+            player.equipWeapon((Weapon)player.getInventory().get(0));
+            player.getInventory().add(ItemDatabase.createArmor("leather_armor"));
+            player.equipArmor((Armor)player.getInventory().get(1));
+            player.getInventory().add(ItemDatabase.createConsumable("hp_potion"));
+            player.getInventory().add(ItemDatabase.createRelic("relic_plus_ap"));
+        } else {
+            // Developer mode: maxed stats and lots of gear/items
+            this.player = new Player("DevHero", 999, 999, 10);
+            // give several powerful items
+            player.getInventory().add(ItemDatabase.createWeapon("fire_staff"));
+            player.getInventory().add(ItemDatabase.createWeapon("iron_sword"));
+            player.equipWeapon((Weapon)player.getInventory().get(0));
+            player.getInventory().add(ItemDatabase.createArmor("chain_armor"));
+            player.getInventory().add(ItemDatabase.createArmor("leather_armor"));
+            player.equipArmor((Armor)player.getInventory().get(2));
+            // add multiple consumables and relics
+            player.getInventory().add(ItemDatabase.createConsumable("hp_potion"));
+            player.getInventory().add(ItemDatabase.createConsumable("hp_potion"));
+            player.getInventory().add(ItemDatabase.createRelic("relic_plus_ap"));
+            player.getInventory().add(ItemDatabase.createRelic("relic_crit"));
+            // ensure HP is full
+            player.heal(0); // no-op but consistent
+        }
+
+        // start in center-like position
+        int sx = WIDTH/2;
+        int sy = HEIGHT/2;
+        player.setPosition(sx, sy);
+        if (!explored[sy][sx]) { explored[sy][sx] = true; exploredCount++; }
     }
 
     public void start() {
@@ -44,8 +76,30 @@ public class InstanceGame {
                 inspectInventory();
                 continue;
             } else if (cmd.equals("w")||cmd.equals("a")||cmd.equals("s")||cmd.equals("d")) {
-                move(cmd);
-                // after move: check encounter
+                boolean newlyExplored = move(cmd);
+                // after move: check boss chance first
+                boolean bossTriggered = false;
+                if (newlyExplored) {
+                    if (exploredCount >= totalRooms) {
+                        // last room explored -> guaranteed boss
+                        System.out.println("As this is the last unexplored room, a powerful presence fills the air...");
+                        Enemy boss = EnemyDatabase.createEnemy("region_boss");
+                        System.out.println("BOSS ENCOUNTER! " + boss.getName() + " appears!");
+                        bossTriggered = true;
+                        boolean survived = combat(Arrays.asList(boss));
+                        if (!survived) { System.out.println("You were slain by the boss."); break; }
+                    } else if (rnd.nextDouble() < 0.05) {
+                        // 5% chance on any newly explored room
+                        Enemy boss = EnemyDatabase.createEnemy("region_boss");
+                        System.out.println("A chilling wind... Boss appears: " + boss.getName());
+                        bossTriggered = true;
+                        boolean survived = combat(Arrays.asList(boss));
+                        if (!survived) { System.out.println("You were slain by the boss."); break; }
+                    }
+                }
+                if (bossTriggered) continue; // boss handled this room
+
+                // regular encounters / loot
                 if (rnd.nextDouble() < 0.5) {
                     Enemy e = EnemyDatabase.createRandomEnemyForRegion(getRegionAt(player.getX(), player.getY()));
                     System.out.println("Encounter! A " + e.getName() + " appears!");
@@ -75,25 +129,24 @@ public class InstanceGame {
     }
 
     private void renderMap() {
-        System.out.println("Map Legend: [ ] unexplored, [P] you\n");
+        System.out.println("Map Legend: [ ] = room  , [P] = you\n");
         for (int r = 0; r < HEIGHT; r++) {
             StringBuilder line = new StringBuilder();
             for (int c = 0; c < WIDTH; c++) {
                 if (player.getX() == c && player.getY() == r) {
                     line.append("[P]");
-                } else if (explored[r][c]) {
-                    line.append("[ ]");
                 } else {
-                    line.append(" . ");
+                    // show all rooms as [ ] to match requested style
+                    line.append("[ ]");
                 }
                 if (c < WIDTH-1) line.append("-");
             }
             System.out.println(line.toString());
         }
-        System.out.println();
+        System.out.println("Explored rooms: " + exploredCount + "/" + totalRooms + "\n");
     }
 
-    private void move(String dir) {
+    private boolean move(String dir) {
         int nx = player.getX();
         int ny = player.getY();
         switch (dir) {
@@ -104,11 +157,19 @@ public class InstanceGame {
         }
         if (nx < 0 || nx >= WIDTH || ny < 0 || ny >= HEIGHT) {
             System.out.println("You can't move further in that direction.");
-            return;
+            return false;
+        }
+        boolean newlyExplored = false;
+        if (!explored[ny][nx]) {
+            explored[ny][nx] = true;
+            exploredCount++;
+            newlyExplored = true;
+            System.out.println("You discovered a new room! (" + exploredCount + "/" + totalRooms + ")");
+        } else {
+            System.out.println("You moved to (" + nx + "," + ny + ") - already visited.");
         }
         player.setPosition(nx, ny);
-        explored[ny][nx] = true;
-        System.out.println("You moved to (" + nx + "," + ny + ") - Region " + getRegionAt(nx, ny));
+        return newlyExplored;
     }
 
     private void inspectInventory() {
