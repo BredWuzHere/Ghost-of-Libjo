@@ -11,6 +11,13 @@ public class InstanceGame {
     private final int totalRooms = WIDTH * HEIGHT;
     private Random rnd = new Random();
 
+    // Campaign progression: start at stage 1, final stage = 3 (final boss -> elixir)
+    private int campaignStage = 1;
+    private final int MAX_CAMPAIGN_STAGE = 3;
+
+    // track cleared regions by boss defeat (not strictly required but kept)
+    private boolean[] clearedRegions = new boolean[5];
+
     // Default constructor (normal play)
     public InstanceGame(Scanner in) {
         this(in, false);
@@ -21,39 +28,81 @@ public class InstanceGame {
         this.in = in;
         this.explored = new boolean[HEIGHT][WIDTH];
 
+        // ensure databases know current stage
+        ItemDatabase.setStage(campaignStage);
+        EnemyDatabase.setStage(campaignStage);
+
         if (!devMode) {
             this.player = new Player("Hero", 30, 5, 4);
             // give starter items
-            player.getInventory().add(ItemDatabase.createWeapon("iron_sword"));
-            player.equipWeapon((Weapon)player.getInventory().get(0));
-            player.getInventory().add(ItemDatabase.createArmor("leather_armor"));
-            player.equipArmor((Armor)player.getInventory().get(1));
-            player.getInventory().add(ItemDatabase.createConsumable("hp_potion"));
-            player.getInventory().add(ItemDatabase.createRelic("relic_plus_ap"));
+            safeAddWeaponToInventory("iron_sword");
+            safeAddArmorToInventory("leather_armor");
+            safeAddConsumableToInventory("hp_potion");
+            safeAddRelicToInventory("relic_plus_ap");
+            // equip first if present
+            safeEquipFirstWeapon();
+            safeEquipFirstArmor();
         } else {
-            // Developer mode: maxed stats and lots of gear/items
+            // Developer mode: maxed stats and lots of gear/items, but avoid unknown IDs causing NPE
             this.player = new Player("DevHero", 999, 999, 10);
-            // give several powerful items
-            player.getInventory().add(ItemDatabase.createWeapon("fire_staff"));
-            player.getInventory().add(ItemDatabase.createWeapon("iron_sword"));
-            player.equipWeapon((Weapon)player.getInventory().get(0));
-            player.getInventory().add(ItemDatabase.createArmor("chain_armor"));
-            player.getInventory().add(ItemDatabase.createArmor("leather_armor"));
-            player.equipArmor((Armor)player.getInventory().get(2));
-            // add multiple consumables and relics
-            player.getInventory().add(ItemDatabase.createConsumable("hp_potion"));
-            player.getInventory().add(ItemDatabase.createConsumable("hp_potion"));
-            player.getInventory().add(ItemDatabase.createRelic("relic_plus_ap"));
-            player.getInventory().add(ItemDatabase.createRelic("relic_crit"));
+            safeAddWeaponToInventory("fire_staff");
+            safeAddWeaponToInventory("iron_sword");
+            safeAddWeaponToInventory("iron_sword"); // duplicate so there's a high-index weapon too
+            safeAddArmorToInventory("chain_armor");
+            safeAddArmorToInventory("leather_armor");
+            safeAddConsumableToInventory("hp_potion");
+            safeAddConsumableToInventory("hp_potion");
+            safeAddRelicToInventory("relic_plus_ap");
+            safeAddRelicToInventory("relic_crit");
+            safeEquipFirstWeapon();
+            safeEquipFirstArmor();
+            safeEquipFirstRelic();
             // ensure HP is full
             player.heal(0); // no-op but consistent
         }
 
-        // start in center-like position
-        int sx = WIDTH/2;
-        int sy = HEIGHT/2;
+        // start in center-like position and mark explored
+        int sx = WIDTH / 2;
+        int sy = HEIGHT / 2;
         player.setPosition(sx, sy);
         if (!explored[sy][sx]) { explored[sy][sx] = true; exploredCount++; }
+    }
+
+    /* -------------------------
+       Helpers for safe adding (avoid NPE if ID not found)
+       ------------------------- */
+    private void safeAddWeaponToInventory(String id) {
+        try {
+            Weapon w = ItemDatabase.createWeapon(id);
+            if (w != null) player.getInventory().add(w);
+        } catch (Exception ignored) {}
+    }
+    private void safeAddArmorToInventory(String id) {
+        try {
+            Armor a = ItemDatabase.createArmor(id);
+            if (a != null) player.getInventory().add(a);
+        } catch (Exception ignored) {}
+    }
+    private void safeAddRelicToInventory(String id) {
+        try {
+            Relic r = ItemDatabase.createRelic(id);
+            if (r != null) player.getInventory().add(r);
+        } catch (Exception ignored) {}
+    }
+    private void safeAddConsumableToInventory(String id) {
+        try {
+            Consumable c = ItemDatabase.createConsumable(id);
+            if (c != null) player.getInventory().add(c);
+        } catch (Exception ignored) {}
+    }
+    private void safeEquipFirstWeapon() {
+        for (Item it : player.getInventory()) if (it instanceof Weapon) { player.equipWeapon((Weapon)it); break; }
+    }
+    private void safeEquipFirstArmor() {
+        for (Item it : player.getInventory()) if (it instanceof Armor) { player.equipArmor((Armor)it); break; }
+    }
+    private void safeEquipFirstRelic() {
+        for (Item it : player.getInventory()) if (it instanceof Relic) { player.setEquippedRelic((Relic)it); break; }
     }
 
     public void start() {
@@ -65,6 +114,7 @@ public class InstanceGame {
         while (running) {
             clearScreen();
             renderMap();
+            System.out.println("Campaign Stage: " + campaignStage + "/" + MAX_CAMPAIGN_STAGE);
             System.out.println("HP: " + player.getHp() + "/" + player.getMaxHp() + "  AP: " + player.getAp() + "  Weapon: " + (player.getWeapon()!=null?player.getWeapon().getName():"None"));
             System.out.println("Inventory: " + player.getInventory().size() + " items. (type 'i' to inspect)");
             System.out.print("Move (w/a/s/d) or (i)nventory or (q)uit run: ");
@@ -80,23 +130,24 @@ public class InstanceGame {
                 boolean newlyExplored = move(cmd);
                 // after move: check boss chance first
                 boolean bossTriggered = false;
+                int currentRegion = getRegionAt(player.getX(), player.getY());
                 if (newlyExplored) {
                     if (exploredCount >= totalRooms) {
-                        // last room explored -> guaranteed boss
+                        // last room explored -> guaranteed boss for this campaign stage
                         clearScreen();
-                        System.out.println("As this is the last unexplored room, a powerful presence fills the air...");
-                        Enemy boss = EnemyDatabase.createEnemy("region_boss");
+                        System.out.println("As this is the last unexplored room in this area, a powerful presence fills the air...");
+                        Enemy boss = EnemyDatabase.createEnemyForStage("stage_boss", campaignStage);
                         System.out.println("BOSS ENCOUNTER! " + boss.getName() + " appears!");
                         bossTriggered = true;
-                        boolean survived = combat(Arrays.asList(boss));
+                        boolean survived = combat(Arrays.asList(boss), true, currentRegion);
                         if (!survived) { System.out.println("You were slain by the boss."); pause(); break; }
                     } else if (rnd.nextDouble() < 0.05) {
                         // 5% chance on any newly explored room
                         clearScreen();
-                        Enemy boss = EnemyDatabase.createEnemy("region_boss");
+                        Enemy boss = EnemyDatabase.createEnemyForStage("stage_boss", campaignStage);
                         System.out.println("A chilling wind... Boss appears: " + boss.getName());
                         bossTriggered = true;
-                        boolean survived = combat(Arrays.asList(boss));
+                        boolean survived = combat(Arrays.asList(boss), true, currentRegion);
                         if (!survived) { System.out.println("You were slain by the boss."); pause(); break; }
                     }
                 }
@@ -105,9 +156,9 @@ public class InstanceGame {
                 // regular encounters / loot
                 if (rnd.nextDouble() < 0.5) {
                     clearScreen();
-                    Enemy e = EnemyDatabase.createRandomEnemyForRegion(getRegionAt(player.getX(), player.getY()));
+                    Enemy e = EnemyDatabase.createRandomEnemyForRegion(currentRegion);
                     System.out.println("Encounter! A " + e.getName() + " appears!");
-                    boolean survived = combat(Arrays.asList(e));
+                    boolean survived = combat(Arrays.asList(e), false, currentRegion);
                     if (!survived) {
                         System.out.println("You died. Run ends.");
                         pause();
@@ -115,7 +166,7 @@ public class InstanceGame {
                     }
                 } else if (rnd.nextDouble() < 0.3) {
                     clearScreen();
-                    Item it = ItemDatabase.createRandomLootForRegion(getRegionAt(player.getX(), player.getY()));
+                    Item it = ItemDatabase.createRandomLootForRegion(currentRegion);
                     System.out.println("You found: " + it.getName() + " - " + it.getDescription());
                     player.getInventory().add(it);
                     pause();
@@ -137,14 +188,16 @@ public class InstanceGame {
     }
 
     private void renderMap() {
-        System.out.println("Map Legend: [ ] = room  , [P] = you\n");
+        System.out.println("Map Legend: [ ] = unexplored  , [E] = explored  , [P] = you\n");
         for (int r = 0; r < HEIGHT; r++) {
             StringBuilder line = new StringBuilder();
             for (int c = 0; c < WIDTH; c++) {
+                // Player marker has priority
                 if (player.getX() == c && player.getY() == r) {
                     line.append("[P]");
+                } else if (explored[r][c]) {
+                    line.append("[E]");
                 } else {
-                    // show all rooms as [ ] to match requested style
                     line.append("[ ]");
                 }
                 if (c < WIDTH-1) line.append("-");
@@ -192,7 +245,7 @@ public class InstanceGame {
                 Item it = player.getInventory().get(i);
                 System.out.println(i+1 + ") " + it.getName() + " - " + it.getDescription());
             }
-            System.out.println("e) Equip weapon/armor, u) Use consumable, b) back");
+            System.out.println("e) Equip weapon/armor, u) Use consumable, d) Delete item, b) back");
             System.out.print("Choice: ");
             String c = in.nextLine().trim().toLowerCase();
             if (c.equals("b")) break;
@@ -231,6 +284,22 @@ public class InstanceGame {
                     }
                 } catch (NumberFormatException ex) { System.out.println("Invalid"); }
                 pause();
+            } else if (c.equals("d")) {
+                System.out.print("Enter item number to DELETE (permanent): ");
+                try {
+                    int idx = Integer.parseInt(in.nextLine().trim()) - 1;
+                    if (idx < 0 || idx >= player.getInventory().size()) { System.out.println("Invalid"); pause(); continue; }
+                    Item sel = player.getInventory().get(idx);
+                    System.out.print("Confirm delete " + sel.getName() + " ? (y/n): ");
+                    String conf = in.nextLine().trim().toLowerCase();
+                    if (conf.equals("y")) {
+                        player.getInventory().remove(idx);
+                        System.out.println("Item deleted.");
+                    } else {
+                        System.out.println("Cancelled.");
+                    }
+                } catch (NumberFormatException ex) { System.out.println("Invalid"); }
+                pause();
             } else {
                 System.out.println("Unknown command.");
                 pause();
@@ -238,7 +307,14 @@ public class InstanceGame {
         }
     }
 
-    private boolean combat(List<Enemy> enemies) {
+    /**
+     * Main combat routine.
+     * @param enemies list of enemies in this encounter
+     * @param isBoss whether this is a boss encounter
+     * @param region the region index where this combat takes place (1..4)
+     * @return true if player survived, false if player died
+     */
+    private boolean combat(List<Enemy> enemies, boolean isBoss, int region) {
         System.out.println("Combat start!");
         // reset AP
         player.resetAp();
@@ -263,22 +339,81 @@ public class InstanceGame {
             player.resetAp();
             for (Enemy e : enemies) e.resetAp();
         }
+
         boolean survived = player.isAlive();
         if (survived) {
             System.out.println("You won the fight!");
             // loot
             for (Enemy e : enemies) if (!e.isAlive()) {
                 if (rnd.nextDouble() < 0.5) {
-                    Item it = ItemDatabase.createRandomLootForRegion(getRegionAt(player.getX(), player.getY()));
+                    Item it = ItemDatabase.createRandomLootForRegion(region);
                     System.out.println("Enemy dropped: " + it.getName());
                     player.getInventory().add(it);
                 }
             }
+
+            // If this was a boss encounter and player survived -> progress campaign stage
+            if (isBoss) {
+                System.out.println("\n--- BOSS DEFEATED ---");
+                if (campaignStage < MAX_CAMPAIGN_STAGE) {
+                    campaignStage++;
+                    // prepare next stage: reset map and inform DBs
+                    advanceToNextStage();
+                } else {
+                    // final stage boss defeated -> grant elixir (if defined)
+                    Relic elixir = ItemDatabase.createRelic("elixir_of_life");
+                    if (elixir != null) {
+                        player.getInventory().add(elixir);
+                        int addHp = elixir.getAddMaxHp();
+                        if (addHp > 0) {
+                            player.addMaxHp(addHp);
+                            System.out.println("Your maximum HP increases by " + addHp + "!");
+                        }
+                        System.out.println("You obtained: " + elixir.getName() + " - " + elixir.getDescription());
+                    } else {
+                        System.out.println("You found a mysterious elixir (database entry missing).");
+                    }
+                    System.out.println("\nCongratulations — you have completed the campaign!");
+                }
+            }
+
             pause();
         } else {
             pause();
         }
         return survived;
+    }
+
+    // move player to next stage: reset map, set DBs to new stage, small lore message
+    private void advanceToNextStage() {
+        clearScreen();
+        System.out.println("The land shifts as your victory echoes. You feel the world rearrange...");
+        // reset map exploration for new stage
+        for (int r = 0; r < HEIGHT; r++) for (int c = 0; c < WIDTH; c++) explored[r][c] = false;
+        exploredCount = 0;
+        // reposition player to center and mark explored
+        int sx = WIDTH / 2;
+        int sy = HEIGHT / 2;
+        player.setPosition(sx, sy);
+        explored[sy][sx] = true;
+        exploredCount++;
+
+        // inform databases of stage change so that new items/enemies appear
+        ItemDatabase.setStage(campaignStage);
+        EnemyDatabase.setStage(campaignStage);
+
+        // stage lore
+        switch (campaignStage) {
+            case 2:
+                System.out.println("You are drawn to Region 2 — new dangers and treasures await.");
+                break;
+            case 3:
+                System.out.println("The path to the final stronghold opens. This is the last challenge.");
+                break;
+            default:
+                System.out.println("You feel the world change.");
+        }
+        pause();
     }
 
     private void playerTurn(List<Enemy> enemies) {

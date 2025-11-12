@@ -6,7 +6,7 @@ public class Main {
         Scanner in = new Scanner(System.in);
         while (true) {
             clearScreen();
-            System.out.println("=== ROGUELIKE: CONSOLE EDITION ===");
+            System.out.println("=== GHOST OF LIBJO ===");
             System.out.println("1) Play Game");
             System.out.println("2) About Game");
             System.out.println("3) Developer Mode (playtest)");
@@ -18,7 +18,7 @@ public class Main {
                 game.start();
             } else if (choice.equals("2")) {
                 clearScreen();
-                System.out.println("Roguelike: Console Edition\n" +
+                System.out.println("THE GHOST OF LIBJO\n" +
                         "- Turn-based combat with Action Points (AP)\n" +
                         "- 4 Regions to explore (map divided into 4 quadrants)\n" +
                         "- Polymorphic items: Weapons, Armor, Relics, Consumables\n" +

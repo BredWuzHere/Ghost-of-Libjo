@@ -1,14 +1,17 @@
+// ItemDatabase.java
 import java.util.*;
 
 public class ItemDatabase {
     private static Map<String, Item> prototypes = new HashMap<>();
     private static Random rnd = new Random();
+
+    // current campaign stage (affects loot pools)
+    private static int currentStage = 1;
+
     static {
         // Weapons
         prototypes.put("iron_sword", new Weapon("iron_sword","Iron Sword","A sturdy iron sword.", 6, 0.05, 1.5, 100, ElementType.NONE));
         prototypes.put("fire_staff", new Weapon("fire_staff","Fire Staff","A staff imbued with flame.", 5, 0.08, 1.6, 100, ElementType.FIRE));
-        prototypes.put("suayansdick", new Weapon("suayansdick","Suayan's dick","A short dick", 999, 100, 2, 9999, ElementType.NONE));
-
         // Armor
         prototypes.put("leather_armor", new Armor("leather_armor","Leather Armor","Light protective leather.", 1, 0.05, 100));
         prototypes.put("chain_armor", new Armor("chain_armor","Chain Armor","Better protection.", 3, 0.10, 100));
@@ -17,6 +20,13 @@ public class ItemDatabase {
         prototypes.put("relic_crit", new Relic("relic_crit","Relic of Precision","+10% Crit Chance.", 0, 0.10, 0.0, 0));
         // Consumables
         prototypes.put("hp_potion", new Consumable("hp_potion","Health Potion","Restores 10 HP.", ConsumableType.HEAL, 10));
+        // Elixir awarded at campaign end
+        prototypes.put("elixir_of_life", new Relic("elixir_of_life", "Elixir of Life",
+                "A rare elixir that permanently increases your vitality (+50 Max HP).", 0, 0.0, 0.0, 50));
+    }
+
+    public static void setStage(int stage) {
+        currentStage = Math.max(1, stage);
     }
 
     public static Item createItem(String id) {
@@ -45,9 +55,25 @@ public class ItemDatabase {
     public static Consumable createConsumable(String id) { return (Consumable)createItem(id); }
 
     public static Item createRandomLootForRegion(int region) {
-        // simple random selection
+        // Stage-aware random selection
         List<String> pool = new ArrayList<>();
-        pool.add("hp_potion"); pool.add("iron_sword"); pool.add("leather_armor"); pool.add("relic_crit");
+        if (currentStage == 1) {
+            pool.add("hp_potion");
+            pool.add("iron_sword");
+            pool.add("leather_armor");
+            pool.add("relic_crit");
+        } else if (currentStage == 2) {
+            pool.add("hp_potion");
+            pool.add("fire_staff");
+            pool.add("chain_armor");
+            pool.add("relic_plus_ap");
+        } else { // stage 3+ (late game)
+            pool.add("hp_potion");
+            pool.add("fire_staff");
+            pool.add("chain_armor");
+            pool.add("relic_crit");
+            // elixir is RESERVED for final boss reward, not random loot, so not added here
+        }
         String pick = pool.get(rnd.nextInt(pool.size()));
         return createItem(pick);
     }
