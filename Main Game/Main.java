@@ -1,4 +1,3 @@
-// Main.java
 import java.util.Scanner;
 
 public class Main {
@@ -18,17 +17,12 @@ public class Main {
                 game.start();
             } else if (choice.equals("2")) {
                 clearScreen();
-                System.out.println("THE GHOST OF LIBJO\n" +
-                        "- Turn-based combat with Action Points (AP)\n" +
-                        "- 4 Regions to explore (map divided into 4 quadrants)\n" +
-                        "- Polymorphic items: Weapons, Armor, Relics, Consumables\n" +
-                        "- Developer Mode starts the player with max stats for testing\n" +
-                        "- If you die, your run resets (new InstanceGame)\n");
+                System.out.println("GHOST OF LIBJO\n- Turn-based combat with AP\n- 4 Regions\n- Developer Mode");
                 System.out.println("\nPress Enter to return to menu...");
                 in.nextLine();
             } else if (choice.equals("3")) {
                 clearScreen();
-                System.out.println("Starting Developer Mode (max stats, extra loot)...");
+                System.out.println("Starting Developer Mode (max stats)...");
                 InstanceGame game = new InstanceGame(in, true);
                 game.start();
             } else if (choice.equals("4")) {
@@ -43,7 +37,6 @@ public class Main {
         in.close();
     }
 
-    // Clear screen helper: tries platform methods, falls back to printing newlines.
     private static void clearScreen() {
         try {
             final String os = System.getProperty("os.name");
@@ -54,7 +47,6 @@ public class Main {
                 System.out.flush();
             }
         } catch (Exception e) {
-            // fallback
             for (int i = 0; i < 50; i++) System.out.println();
         }
     }

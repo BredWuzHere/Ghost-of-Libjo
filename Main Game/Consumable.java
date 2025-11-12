@@ -1,21 +1,9 @@
 public class Consumable extends Item {
-    ConsumableType type;
-    int amount;
-
-    public Consumable(String id, String name, String description, ConsumableType type, int amount) {
-        super(id,name,description);
-        this.type = type; this.amount = amount;
-    }
-
+    public enum ConsumableType { HEAL, BUFF }
+    ConsumableType type; int amount;
+    public Consumable(String id, String name, String desc, ConsumableType type, int amount) { super(id,name,desc); this.type=type; this.amount=amount; }
     public void use(Player p) {
-        switch (type) {
-            case HEAL:
-                p.heal(amount);
-                System.out.println("You restored " + amount + " HP.");
-                break;
-            case TEMP_BUFF:
-                System.out.println("You feel empowered briefly (not implemented complex buffs).\n");
-                break;
-        }
+        if (type==ConsumableType.HEAL) { p.heal(amount); System.out.println(p.getName() + " healed " + amount + " HP."); }
+        else System.out.println("Used " + getName());
     }
 }
