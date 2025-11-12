@@ -57,13 +57,13 @@ public class InstanceGame {
     }
 
     public void start() {
-        System.out.println("Starting new run. Good luck!");
         gameLoop();
     }
 
     private void gameLoop() {
         boolean running = true;
         while (running) {
+            clearScreen();
             renderMap();
             System.out.println("HP: " + player.getHp() + "/" + player.getMaxHp() + "  AP: " + player.getAp() + "  Weapon: " + (player.getWeapon()!=null?player.getWeapon().getName():"None"));
             System.out.println("Inventory: " + player.getInventory().size() + " items. (type 'i' to inspect)");
@@ -71,6 +71,7 @@ public class InstanceGame {
             String cmd = in.nextLine().trim().toLowerCase();
             if (cmd.equals("q")) {
                 System.out.println("You abandoned your run.");
+                pause();
                 break;
             } else if (cmd.equals("i")) {
                 inspectInventory();
@@ -82,39 +83,46 @@ public class InstanceGame {
                 if (newlyExplored) {
                     if (exploredCount >= totalRooms) {
                         // last room explored -> guaranteed boss
+                        clearScreen();
                         System.out.println("As this is the last unexplored room, a powerful presence fills the air...");
                         Enemy boss = EnemyDatabase.createEnemy("region_boss");
                         System.out.println("BOSS ENCOUNTER! " + boss.getName() + " appears!");
                         bossTriggered = true;
                         boolean survived = combat(Arrays.asList(boss));
-                        if (!survived) { System.out.println("You were slain by the boss."); break; }
+                        if (!survived) { System.out.println("You were slain by the boss."); pause(); break; }
                     } else if (rnd.nextDouble() < 0.05) {
                         // 5% chance on any newly explored room
+                        clearScreen();
                         Enemy boss = EnemyDatabase.createEnemy("region_boss");
                         System.out.println("A chilling wind... Boss appears: " + boss.getName());
                         bossTriggered = true;
                         boolean survived = combat(Arrays.asList(boss));
-                        if (!survived) { System.out.println("You were slain by the boss."); break; }
+                        if (!survived) { System.out.println("You were slain by the boss."); pause(); break; }
                     }
                 }
                 if (bossTriggered) continue; // boss handled this room
 
                 // regular encounters / loot
                 if (rnd.nextDouble() < 0.5) {
+                    clearScreen();
                     Enemy e = EnemyDatabase.createRandomEnemyForRegion(getRegionAt(player.getX(), player.getY()));
                     System.out.println("Encounter! A " + e.getName() + " appears!");
                     boolean survived = combat(Arrays.asList(e));
                     if (!survived) {
                         System.out.println("You died. Run ends.");
+                        pause();
                         break; // exit game loop to return to main menu
                     }
                 } else if (rnd.nextDouble() < 0.3) {
+                    clearScreen();
                     Item it = ItemDatabase.createRandomLootForRegion(getRegionAt(player.getX(), player.getY()));
                     System.out.println("You found: " + it.getName() + " - " + it.getDescription());
                     player.getInventory().add(it);
+                    pause();
                 }
             } else {
                 System.out.println("Unknown command.");
+                pause();
             }
         }
     }
@@ -157,6 +165,7 @@ public class InstanceGame {
         }
         if (nx < 0 || nx >= WIDTH || ny < 0 || ny >= HEIGHT) {
             System.out.println("You can't move further in that direction.");
+            pause();
             return false;
         }
         boolean newlyExplored = false;
@@ -164,16 +173,20 @@ public class InstanceGame {
             explored[ny][nx] = true;
             exploredCount++;
             newlyExplored = true;
+            clearScreen();
             System.out.println("You discovered a new room! (" + exploredCount + "/" + totalRooms + ")");
         } else {
+            clearScreen();
             System.out.println("You moved to (" + nx + "," + ny + ") - already visited.");
         }
         player.setPosition(nx, ny);
+        pause();
         return newlyExplored;
     }
 
     private void inspectInventory() {
         while (true) {
+            clearScreen();
             System.out.println("--- Inventory ---");
             for (int i = 0; i < player.getInventory().size(); i++) {
                 Item it = player.getInventory().get(i);
@@ -187,7 +200,7 @@ public class InstanceGame {
                 System.out.print("Enter item number to equip: ");
                 try {
                     int idx = Integer.parseInt(in.nextLine().trim()) - 1;
-                    if (idx < 0 || idx >= player.getInventory().size()) { System.out.println("Invalid"); continue; }
+                    if (idx < 0 || idx >= player.getInventory().size()) { System.out.println("Invalid"); pause(); continue; }
                     Item sel = player.getInventory().get(idx);
                     if (sel instanceof Weapon) {
                         player.equipWeapon((Weapon)sel);
@@ -202,11 +215,12 @@ public class InstanceGame {
                         System.out.println("Cannot equip that item.");
                     }
                 } catch (NumberFormatException ex) { System.out.println("Invalid"); }
+                pause();
             } else if (c.equals("u")) {
                 System.out.print("Enter item number to use: ");
                 try {
                     int idx = Integer.parseInt(in.nextLine().trim()) - 1;
-                    if (idx < 0 || idx >= player.getInventory().size()) { System.out.println("Invalid"); continue; }
+                    if (idx < 0 || idx >= player.getInventory().size()) { System.out.println("Invalid"); pause(); continue; }
                     Item sel = player.getInventory().get(idx);
                     if (sel instanceof Consumable) {
                         ((Consumable)sel).use(player);
@@ -216,8 +230,10 @@ public class InstanceGame {
                         System.out.println("That item is not usable.");
                     }
                 } catch (NumberFormatException ex) { System.out.println("Invalid"); }
+                pause();
             } else {
                 System.out.println("Unknown command.");
+                pause();
             }
         }
     }
@@ -258,18 +274,22 @@ public class InstanceGame {
                     player.getInventory().add(it);
                 }
             }
+            pause();
+        } else {
+            pause();
         }
         return survived;
     }
 
     private void playerTurn(List<Enemy> enemies) {
         while (player.getAp() > 0 && player.isAlive() && enemies.stream().anyMatch(Enemy::isAlive)) {
+            clearScreen();
             System.out.println("--- Player Turn --- AP: " + player.getAp());
             System.out.println("1) Attack (2 AP)  2) Use Consumable (1 AP)  3) Inspect enemies  4) End Turn");
             System.out.print("Choice: ");
             String c = in.nextLine().trim();
             if (c.equals("1")) {
-                if (player.getAp() < 2) { System.out.println("Not enough AP."); continue; }
+                if (player.getAp() < 2) { System.out.println("Not enough AP."); pause(); continue; }
                 // pick enemy
                 List<Enemy> alive = new ArrayList<>();
                 for (Enemy e : enemies) if (e.isAlive()) alive.add(e);
@@ -278,34 +298,39 @@ public class InstanceGame {
                 System.out.print("Target: ");
                 try {
                     int idx = Integer.parseInt(in.nextLine().trim()) - 1;
-                    if (idx < 0 || idx >= alive.size()) { System.out.println("Invalid"); continue; }
+                    if (idx < 0 || idx >= alive.size()) { System.out.println("Invalid"); pause(); continue; }
                     Enemy target = alive.get(idx);
                     int dmg = player.attack();
                     System.out.println("You hit " + target.getName() + " for " + dmg + " damage.");
                     target.takeDamage(dmg);
                     player.spendAp(2);
                 } catch (NumberFormatException ex) { System.out.println("Invalid"); }
+                pause();
             } else if (c.equals("2")) {
-                if (player.getAp() < 1) { System.out.println("Not enough AP."); continue; }
+                if (player.getAp() < 1) { System.out.println("Not enough AP."); pause(); continue; }
                 // use consumable
                 List<Consumable> cons = player.getConsumables();
-                if (cons.isEmpty()) { System.out.println("No consumables."); continue; }
+                if (cons.isEmpty()) { System.out.println("No consumables."); pause(); continue; }
                 for (int i = 0; i < cons.size(); i++) System.out.println((i+1)+") " + cons.get(i).getName() + " - " + cons.get(i).getDescription());
                 System.out.print("Use which: ");
                 try {
                     int idx = Integer.parseInt(in.nextLine().trim()) - 1;
-                    if (idx < 0 || idx >= cons.size()) { System.out.println("Invalid"); continue; }
+                    if (idx < 0 || idx >= cons.size()) { System.out.println("Invalid"); pause(); continue; }
                     Consumable citem = cons.get(idx);
                     citem.use(player);
                     player.getInventory().remove(citem);
                     player.spendAp(1);
                 } catch (NumberFormatException ex) { System.out.println("Invalid"); }
+                pause();
             } else if (c.equals("3")) {
                 for (Enemy e : enemies) System.out.println(e.getName() + " HP:" + e.getHp());
+                System.out.println("Press Enter to continue...");
+                in.nextLine();
             } else if (c.equals("4")) {
                 break;
             } else {
                 System.out.println("Unknown");
+                pause();
             }
         }
     }
@@ -319,5 +344,26 @@ public class InstanceGame {
         boolean isPlayer() { return player != null; }
         int getSpeed() { return isPlayer() ? player.getSpeed() : enemy.getSpeed(); }
         Enemy getEnemy() { return enemy; }
+    }
+
+    // Clear screen helper; tries platform clear, falls back to newlines
+    private void clearScreen() {
+        try {
+            final String os = System.getProperty("os.name");
+            if (os.contains("Windows")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            } else {
+                System.out.print("\033[H\033[2J");
+                System.out.flush();
+            }
+        } catch (Exception e) {
+            for (int i = 0; i < 50; i++) System.out.println();
+        }
+    }
+
+    // small pause helper used to allow user to read messages before clearing
+    private void pause() {
+        System.out.println("\nPress Enter to continue...");
+        in.nextLine();
     }
 }
