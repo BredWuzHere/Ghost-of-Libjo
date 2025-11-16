@@ -72,7 +72,7 @@ Playtest:
 
 Verified multiple enemy spawn distribution roughly matches probabilities; trimmed lists to cap at 5.
 
-Confirmed moves apply status effects and HUD updates show changes mid-turn.
+
 
 
 

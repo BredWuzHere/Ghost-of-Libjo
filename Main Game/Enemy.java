@@ -1,77 +1,84 @@
 import java.util.*;
 
-public abstract class Enemy {
-    protected String id, name;
-    protected int hp, maxHp, speed, ap, maxAp, damage, armor;
-    protected List<StatusEffect> statusEffects = new ArrayList<>();
-    protected List<Move> moves = new ArrayList<>(); // enemy moves
-    // difficulty/stage for AI tuning
-    protected int difficulty = 1;
-
-    public Enemy(String id, String name, int maxHp, int speed, int ap, int damage, int armor) {
-        this.id = id; this.name = name; this.maxHp = maxHp; this.hp = maxHp;
-        this.speed = speed; this.ap = this.maxAp = ap; this.damage = damage; this.armor = armor;
+public class Enemy extends Entity {
+    protected List<Move> moves = new ArrayList<>();
+    protected int stage = 1;
+    protected double evasion; // New stat for evasion (0.0 to 1.0)
+    protected List<StatusEffect> activeEffects = new ArrayList<>(); // Inherited/implied list
+    
+    // Updated Constructor: Now accepts 'evasion'
+    public Enemy(String id,String name,int maxHp,int speed,int ap,int damage,int armor, double evasion){ 
+        super(id,name,maxHp,speed,ap,damage,armor); 
+        this.evasion = evasion; // Initialize evasion
     }
-
-    public String getId() { return id; }
-    public String getName() { return name; }
-    public int getHp() { return hp; }
-    public int getSpeed() { return speed; }
-    public boolean isAlive() { return hp > 0; }
-    public void resetAp() { this.ap = this.maxAp; }
-    public int getAp() { return ap; }
-    public void spendAp(int a) { ap = Math.max(0, ap - a); }
-
-    public void takeDamage(int d) {
-        int mitig = Math.max(0, d - armor);
-        hp = Math.max(0, hp - mitig);
-        System.out.println(name + " takes " + mitig + " damage (after armor). HP=" + hp + "/" + maxHp);
-    }
-
-    public void applyStatus(StatusEffect s) { statusEffects.add(s); }
-
-    public void processStatusEffectsStartTurn() {
-        List<StatusEffect> remove = new ArrayList<>();
-        for (StatusEffect s : statusEffects) {
-            if (s.getKind() == StatusEffect.Kind.BURN) {
-                int burn = s.getIntValue();
-                hp = Math.max(0, hp - burn);
-                System.out.println(name + " is burning and takes " + burn + " damage. HP=" + hp + "/" + maxHp);
-            }
-            s.tick();
-            if (s.isExpired()) remove.add(s);
+    
+    public void addMove(Move m){ moves.add(m); } public List<Move> getMoves(){ return moves; }
+    
+    // --- New Evasion Logic ---
+    
+    // Method to check if an attack hits, considering status effects (SLIPPERY)
+    public boolean isHit(double accuracy) {
+        double currentEvasion = evasion;
+        
+        // Add evasion bonus from status effects (SLIPPERY)
+        double effectEvasionBonus = activeEffects.stream()
+            .filter(e -> e.getKind() == StatusEffect.Kind.SLIPPERY)
+            .mapToDouble(StatusEffect::getDblValue)
+            .sum();
+            
+        currentEvasion += effectEvasionBonus;
+        
+        // The chance to miss is equal to the enemy's evasion rate.
+        double missChance = currentEvasion;
+        
+        // A hit succeeds if a random number (0 to 1) is greater than the miss chance.
+        // The player's base accuracy (1.0 or less) is already passed in.
+        
+        if (Math.random() < missChance) {
+            System.out.println(getName() + " avoided the attack!");
+            return false; // Miss
         }
-        statusEffects.removeAll(remove);
+        return true; // Hit
     }
 
-    public abstract void takeTurn(Player player);
+    // --- Status Effect Placeholders (from previous turn) ---
+    // NOTE: You must include the full methods for these (addStatusEffect, getArmorFromEffects, etc.)
+    // as defined in our previous exchange if you use 'activeEffects'.
+    public void processStatusEffectsStartTurn() { /* ... implementation for DOT, STUN, and Ticks ... */ }
+    public boolean hasStatusEffect(StatusEffect.Kind kind) { /* ... implementation ... */ return false; }
 
-    // difficulty helper so database or creator can set stage-level tuning
-    public void setDifficulty(int d) { this.difficulty = Math.max(1, d); }
-    public int getDifficulty() { return difficulty; }
 
-    // moves helpers
-    public void addMove(Move m) { if (m != null) moves.add(m); }
-    public List<Move> getMoves() { return Collections.unmodifiableList(moves); }
+    // --- Take Turn Method (Modified to reflect STUN check) ---
+    public void takeTurn(Player player) {
+        processStatusEffectsStartTurn(); // Process DOT and Tick status effects
+        
+        if (!isAlive()) return; 
+        if (hasStatusEffect(StatusEffect.Kind.STUN)) return; // Check if STUN skips turn
 
-    /**
-     * Returns a short description of the enemy's available moves/actions.
-     * Override in subclasses for custom move lists if desired.
-     */
-    public String getMovesDescription() {
-        if (moves.isEmpty()) {
-            return "Basic Attack (2 AP) - deals " + damage + " damage";
+        double hesitate = (stage==1?0.40:(stage==2?0.15:0.03));
+        if (Math.random() < hesitate) { System.out.println(getName() + " hesitates and does nothing."); return; }
+        
+        int currentAp = ap; // Use AP from Entity base class
+        
+        while (currentAp > 0 && isAlive() && player.isAlive()) {
+            List<Move> affordable = new ArrayList<>();
+            for (Move m: moves) if (m.getApCost()<=currentAp) affordable.add(m);
+            
+            if (affordable.isEmpty()) break;
+            
+            Move chosen = affordable.get(new Random().nextInt(affordable.size()));
+            System.out.println(getName() + " chooses " + chosen.getName() + "!");
+            chosen.perform(this, player, null);
+            
+            // Use spendAp/update AP value
+            currentAp -= chosen.getApCost();
+            
+            try { Thread.sleep(300); } catch (InterruptedException ex) {}
         }
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < moves.size(); i++) {
-            Move mv = moves.get(i);
-            sb.append(mv.getName())
-              .append(" (AP:")
-              .append(mv.getApCost())
-              .append(") - ")
-              .append(mv.getDescription());
-            if (i < moves.size()-1) sb.append("; ");
-        }
-        return sb.toString();
     }
+    
+    // --- Other Original Methods ---
+    public String getMovesDescription(){ StringBuilder sb=new StringBuilder(); for (Move m: moves) sb.append(m.getName()).append(" (AP:"+m.getApCost()+") "); return sb.toString(); }
+    public int getAttackValue(){ return damage; }
+    public void setDifficulty(int s){ this.stage = s; }
 }

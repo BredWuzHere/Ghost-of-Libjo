@@ -5,32 +5,31 @@ public class Main {
         Scanner in = new Scanner(System.in);
         while (true) {
             clearScreen();
-            System.out.println("=== GHOST OF LIBJO ===");
+            System.out.println("=== Roguelike Console RPG ===");
             System.out.println("1) Play Game");
-            System.out.println("2) About Game");
-            System.out.println("3) Developer Mode (playtest)");
-            System.out.println("4) Quit Game");
-            System.out.print("Choose: ");
-            String choice = in.nextLine().trim();
-            if (choice.equals("1")) {
-                InstanceGame game = new InstanceGame(in);
-                game.start();
-            } else if (choice.equals("2")) {
+            System.out.println("2) Developer Mode (playtest, max stats)");
+            System.out.println("3) About Game");
+            System.out.println("4) Quit");
+            System.out.print("Choice: ");
+            String c = in.nextLine().trim();
+            if (c.equals("1")) {
+                InstanceGame g = new InstanceGame(in, false);
+                g.start();
+            } else if (c.equals("2")) {
+                InstanceGame g = new InstanceGame(in, true);
+                g.start();
+            } else if (c.equals("3")) {
                 clearScreen();
-                System.out.println("GHOST OF LIBJO\n- Turn-based combat with AP\n- 4 Regions\n- Developer Mode");
+                System.out.println("Roguelike Console RPG - Text driven.");
+                System.out.println("Explore rooms, fight enemies, collect items, and defeat region bosses.");
+                System.out.println("Controls: w/a/s/d to move, i to open inventory.");
                 System.out.println("\nPress Enter to return to menu...");
                 in.nextLine();
-            } else if (choice.equals("3")) {
-                clearScreen();
-                System.out.println("Starting Developer Mode (max stats)...");
-                InstanceGame game = new InstanceGame(in, true);
-                game.start();
-            } else if (choice.equals("4")) {
+            } else if (c.equals("4")) {
                 System.out.println("Goodbye!");
                 break;
             } else {
-                System.out.println("Invalid choice.");
-                System.out.println("Press Enter to continue...");
+                System.out.println("Unknown choice. Press Enter.");
                 in.nextLine();
             }
         }
@@ -47,7 +46,7 @@ public class Main {
                 System.out.flush();
             }
         } catch (Exception e) {
-            for (int i = 0; i < 50; i++) System.out.println();
+            for (int i=0;i<50;i++) System.out.println();
         }
     }
 }
