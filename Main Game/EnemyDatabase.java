@@ -94,29 +94,7 @@ public class EnemyDatabase {
                 e.addMove(d1); e.addMove(d2);
                 break;
 
-            case "tikbalang":
-                e = new SimpleEnemy("tikbalang", "Tikbalang", 14, 6, 5, 5, 1);
-                Move t1 = new Move("hoof_kick", "Hoof Kick", "A powerful kick that may stun.", 2, 1.1,
-                    new StatusEffect(StatusEffect.Kind.GENERIC, "Dazed", "Lose next turn", 1, 0, 0.0), 1, ElementType.NONE);
-                Move t2 = new Move("whirl_dash", "Whirl Dash", "Swift hit that ignores some defense.", 3, 1.3, null, 0, ElementType.NONE);
-                e.addMove(t1); e.addMove(t2);
-                break;
-
-            case "nuno":
-                e = new SimpleEnemy("nuno", "Nuno sa Punso", 18, 3, 6, 4, 2);
-                Move n1 = new Move("mud_throw", "Mud Throw", "Slows the opponent.", 2, 1.0,
-                    new StatusEffect(StatusEffect.Kind.GENERIC, "Slowed", "Reduced AP", 2, 1, 0.0), 1, ElementType.NONE);
-                Move n2 = new Move("ground_spike", "Ground Spike", "Earth spikes rise beneath you.", 3, 1.3, null, 0, ElementType.NONE);
-                e.addMove(n1); e.addMove(n2);
-                break;
-
-            case "aswang":
-                e = new SimpleEnemy("aswang", "Aswang", 20, 4, 5, 6, 2);
-                Move a1 = new Move("blood_bite", "Blood Bite", "Steals life from the target.", 3, 1.2,
-                new StatusEffect(StatusEffect.Kind.GENERIC, "Bleeding", "Lose HP each turn", 2, 1, 0.0), 2, ElementType.NONE);
-                Move a2 = new Move("shadow_leap", "Shadow Leap", "A quick teleport strike.", 2, 1.0, null, 0, ElementType.NONE);
-                e.addMove(a1); e.addMove(a2);
-                break;
+            
 
             default:
                 // Default: Low Evasion (0.05)
