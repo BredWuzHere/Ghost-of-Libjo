@@ -25,7 +25,7 @@ public class ItemDatabase {
         prototypes.put("mirage_shard", new Weapon("mirage_shard","Mirage Shard","Shimmers with illusion.",22,0.50,2.5,100,ElementType.ICE));
         prototypes.put("blade_of_hepatytis", new Weapon("blade_of_hepatytis","Blade of Hepatytis","penetration.", 18, 0.10, 1.2, 100, ElementType.NONE));
         prototypes.put("fishball_stick", new Weapon("fishball_stick","Fishball Stick Stabber","small but terrible", 16, 0.12, 1.4, 100, ElementType.NONE));
-        prototypes.put("electricfan_blade", new Weapon("electricfan_blade","Electric Fan Blade Toss","Sharp fan blade. Hard to aim but deadly.", 35, 0.05, 0.9, 100, ElementType.NONE));
+        prototypes.put("electricfan_blade", new Weapon("electricfan_blade","Electric Fan Blade Toss", "Sharp fan blade. Hard to aim but deadly.",   35, 0.05, 0.9, 100, ElementType.NONE));
     }
 
     public static void setStage(int stage) { currentStage = Math.max(1, stage); }
@@ -78,8 +78,8 @@ public class ItemDatabase {
 
     public static Item createRandomLootForRegion(int region) {
         List<String> pool = new ArrayList<>();
-        if (currentStage==1) { pool.add("hp_potion"); pool.add("iron_sword"); pool.add("leather_armor"); pool.add("relic_crit"); }
-        else if (currentStage==2) { pool.add("hp_potion"); pool.add("fire_staff"); pool.add("chain_armor"); pool.add("relic_plus_ap"); }
+        if (currentStage==1) { pool.add("hp_potion"); pool.add("iron_sword"); pool.add("leather_armor"); pool.add("relic_crit"); pool.add("fishball_stick"); pool.add("balat_ng_hipon"); pool.add("kalawang_armor"); pool.add("ukayukay_jacket"); pool.add("hipon_tentacle"); }
+        else if (currentStage==2) { pool.add("hp_potion"); pool.add("fire_staff"); pool.add("chain_armor"); pool.add("relic_plus_ap"); pool.add("electricfan_blade"); pool.add("construction_vest"); pool.add("blase_of_hepatytis"); pool.add("de_chavez_claw");}
         else { pool.add("hp_potion"); pool.add("fire_staff"); pool.add("chain_armor"); pool.add("relic_crit"); }
         return createItem(pool.get(rnd.nextInt(pool.size())));
     }
