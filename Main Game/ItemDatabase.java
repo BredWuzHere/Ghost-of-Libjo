@@ -41,9 +41,34 @@ public class ItemDatabase {
                 Move m1 = new Move("fire_burst","Fire Burst","Engulfs enemy in flames.",2,1.0,burn,3,ElementType.FIRE);
                 Move m2 = new Move("ember_slap","Ember Slap","A quick ember strike.",1,0.7,null,0,ElementType.FIRE);
                 w.addMove(m1); w.addMove(m2);
+            } else if ("fishball_stick".equals(id)) {
+                Move m1 = new Move("tusok_strike","Tusok Strike","A quick tusok.",2,8.0,null,0,ElementType.NONE);
+                Move m2 = new Move("fishball_fury","Fishball Fury","Unleash the vendors fishball.",3,1.3,null,0,ElementType.NONE);
+                w.addMove(m1); w.addMove(m2);
+
+            } else if ("blade_of_hepatytis".equals(id)) {
+                Move m1 = new Move("toxic_slash","Toxic Slash","A contaminated blade swipe.",2,1.1,null,0,ElementType.POISON);
+                Move m2 = new Move("viral_cleave","Viral Cleave","A heavy infected strike.",3,1.6,null,0,ElementType.POISON);
+                w.addMove(m1); w.addMove(m2);
+
+            } else if ("de_chavez_claw".equals(id)) {
+                Move m1 = new Move("scratch","Scratch","A sharp claw swipe.",2,1.1,null,0,ElementType.NONE);
+                Move m2 = new Move("rabid_rip","Rabid Rip","A wild tearing attack.",3,1.6,null,0,ElementType.NONE);
+                w.addMove(m1); w.addMove(m2);
+            
+            } else if ("electricfan_blade".equals(id)) {
+                Move m1 = new Move("fan_slash","Fan Slash","A spinning slice from a broken electric fan.",2,1.1,null,0,ElementType.NONE);
+                Move m2 = new Move("live_wire_spin","Live Wire Spin","A charged spinning attack.",3,1.3,null,0,ElementType.ELECTRIC);
+                w.addMove(m1); w.addMove(m2);
+            
             } else if ("iron_sword".equals(id)) {
                 Move m1 = new Move("slash","Slash","A basic slash.",2,1.0,null,0,ElementType.NONE);
                 Move m2 = new Move("cleave","Cleave","A heavy cleave.",3,1.6,null,0,ElementType.NONE);
+                w.addMove(m1); w.addMove(m2);
+
+            } else if ("hipon_tentacle".equals(id)) {
+                Move m1 = new Move("slimy_whip","Slimy Whip","A sticky tentacle strike that slightly reduces enemy speed.",2,1.0,null,0,ElementType.NONE);
+                Move m2 = new Move("hipon_frenzy","Hipon Frenzy","Rapid multi-tentacle assault.",3,1.6,null,0,ElementType.NONE);
                 w.addMove(m1); w.addMove(m2);
 
             } else if ("dev_sword".equals(id)) {
