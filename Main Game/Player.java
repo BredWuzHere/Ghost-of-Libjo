@@ -7,7 +7,7 @@ public class Player extends Entity {
     private Relic equippedRelic = null;
 
     public Player(String name, int maxHp, int speed, int ap) {
-        super("player", name, maxHp, speed, ap, 3, 0);
+        super("player", name, maxHp, speed, ap, 4, 2);
     }
 
     public List<Item> getInventory(){ return inventory; }

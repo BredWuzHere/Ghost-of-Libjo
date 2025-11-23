@@ -1,4 +1,3 @@
-
 import java.util.*;
 
 public class InstanceGame {
@@ -69,7 +68,7 @@ public class InstanceGame {
                 int region = getRegionAt(player.getX(), player.getY());
                 if (newly) {
                     if (Text.roll(0.35)) {
-                        System.out.println("\\nLore: " + Text.randomRoomLoreForRegion(region));
+                        System.out.println("\nLore: " + Text.roomLoreForStage(campaignStage));
                     }
                     if (exploredCount >= totalRooms) {
                         clearScreen();
@@ -95,14 +94,18 @@ public class InstanceGame {
                     if (!bossTriggered && rnd.nextDouble() < 0.10) {
                         clearScreen();
                         Item chest = ItemDatabase.createRandomLootForRegion(region);
-                        System.out.println("You found a chest! Inside: " + chest.getName() + " - " + chest.getDescription());
-                        player.getInventory().add(chest);
+                        if (chest != null) {
+                            System.out.println("You found a chest! Inside: " + chest.getName() + " - " + chest.getDescription());
+                            player.getInventory().add(chest);
+                        } else {
+                            System.out.println("You found a chest, but it was empty.");
+                        }
                         pause();
                         continue;
                     }
                 } else {
                     if (Text.roll(0.15)) {
-                        System.out.println("\nYou notice: " + Text.randomRoomLoreForRegion(region));
+                        System.out.println("\nYou notice: " + Text.roomLoreForStage(campaignStage));
                     }
                 }
                 if (bossTriggered) continue;
@@ -118,8 +121,12 @@ public class InstanceGame {
                 } else if (rnd.nextDouble() < 0.3) {
                     clearScreen();
                     Item it = ItemDatabase.createRandomLootForRegion(region);
-                    System.out.println("You found: " + it.getName() + " - " + it.getDescription());
-                    player.getInventory().add(it);
+                    if (it != null) {
+                        System.out.println("You found: " + it.getName() + " - " + it.getDescription());
+                        player.getInventory().add(it);
+                    } else {
+                        System.out.println("You search the area, but find nothing of interest.");
+                    }
                     pause();
                 }
             } else { System.out.println("Unknown command."); pause(); }
@@ -142,18 +149,88 @@ public class InstanceGame {
                 return false;
             }
             System.out.println("\nAs DeChavez collapses, reality shimmers... something even worse approaches.");
-            System.out.println(Text.randomCutsceneLine());
+            System.out.println(Text.regionTransitionForStage(campaignStage));
             pause();
             Enemy sales = EnemyDatabase.createEnemy("sales");
             System.out.println("TRUE BOSS APPEARS! " + sales.getName() + " emerges!");
             boolean beatSales = combat(Arrays.asList(sales), true, region);
             if (!beatSales) { return false; }
             System.out.println("\nYou have defeated the True Boss! The Elixir of Life is yours.");
-            player.getInventory().add(ItemDatabase.createRelic("elixir_of_life"));
             pause();
             return true;
         }
     }
+
+    // --- NEW ANIMATED TRANSITIONS START ---
+
+    private void advanceToNextStage() {
+        clearScreen();
+        
+        if (campaignStage == 2) {
+            playFirstTransition();
+        } else if (campaignStage == 3) {
+            playSecondTransition();
+        } else {
+            System.out.println("The world shifts around you...");
+            pause();
+        }
+
+        // Reset map logic
+        for (int r=0;r<HEIGHT;r++) for (int c=0;c<WIDTH;c++) explored[r][c]=false;
+        exploredCount=0; 
+        int sx=WIDTH/2, sy=HEIGHT/2; 
+        player.setPosition(sx, sy); 
+        explored[sy][sx]=true; 
+        exploredCount++;
+        
+        ItemDatabase.setStage(campaignStage); 
+        EnemyDatabase.setStage(campaignStage);
+    }
+
+    private void playFirstTransition() {
+        String[] paragraphs = {
+            "Between Libjo and Gulod, travelers pass through the quiet road of Dumantay — a place watched over by a spirit named Collmer.",
+            "Long ago, Collmer was a rider who lost control of his motorcycle on a rainy night. He slipped on the sharp curve of Dumantay, and his life ended there. But his spirit never left.",
+            "Now, on foggy evenings, drivers say a figure in a leather jacket appears by the roadside, guiding lost travelers or warning reckless ones to slow down. Engines flicker, headlights dim — and some swear they feel a gentle push when their vehicle stalls.",
+            "Collmer protects Dumantay not out of anger, but redemption — forever guarding the road that once took his life."
+        };
+
+        System.out.println("\n=== ENROUTE FROM LIBJO TO GULOD ===\n");
+        for (String p : paragraphs) {
+            typeText(p, 25);
+            System.out.println("\n"); // Spacing
+            pause(); // Wait for user
+        }
+    }
+
+    private void playSecondTransition() {
+        String[] paragraphs = {
+            "In the bustling roads of Lawas, where smoke hangs heavy and engines never rest, travelers speak of a figure who guides the lost — Kenny, the Guardian of Lawas.",
+            "They say he was once a rider who knew every turn, every shortcut, and every danger hidden in the city’s haze. But one fateful day, the smog grew too thick, and Kenny disappeared into it — his body never found, only the echo of his roaring engine fading in the distance.",
+            "Since then, those who pass through Lawas feel a strange calm when the air grows dense. Some see headlights appear beside them, guiding their way through the fog. Others say a voice whispers warnings before accidents happen.",
+            "Ken’s soul never left Lawas. Surrounded by smoke and chaos, he now leads travelers safely through with his niche motorcycle — a silent guardian in a city that never sleeps."
+        };
+
+        System.out.println("\n=== ENROUTE FROM GULOD TO CITY HALL ===\n");
+        for (String p : paragraphs) {
+            typeText(p, 25);
+            System.out.println("\n"); // Spacing
+            pause(); // Wait for user
+        }
+    }
+
+    private void typeText(String text, int delayMillis) {
+        try {
+            for (char c : text.toCharArray()) {
+                System.out.print(c);
+                Thread.sleep(delayMillis);
+            }
+        } catch (InterruptedException e) {
+            System.out.print(text); // If interrupted, print remaining instantly
+        }
+    }
+
+    // --- NEW ANIMATED TRANSITIONS END ---
 
     private int getRegionAt(int x, int y) {
         int halfW = WIDTH/2, halfH = HEIGHT/2;
@@ -164,7 +241,7 @@ public class InstanceGame {
     }
 
     private void renderMap() {
-        System.out.println("Map Legend: [ ] = unexplored  , [E] = explored  , [P] = you\\n");
+        System.out.println("Map Legend: [ ] = unexplored  , [E] = explored  , [P] = you\n");
         for (int r=0;r<HEIGHT;r++) {
             StringBuilder line = new StringBuilder();
             for (int c=0;c<WIDTH;c++) {
@@ -254,7 +331,7 @@ public class InstanceGame {
                 } else {
                     Enemy e = ta.getEnemy();
                     if (e.isAlive()) {
-                        System.out.println("\\n--- Enemy Turn: " + e.getName() + " ---");
+                        System.out.println("\n--- Enemy Turn: " + e.getName() + " ---");
                         e.takeTurn(player);
                         pause();
                         showPlayerHudDuringCombat();
@@ -272,8 +349,10 @@ public class InstanceGame {
             for (Enemy e : enemies) if (!e.isAlive()) {
                 if (rnd.nextDouble() < 0.5) {
                     Item it = ItemDatabase.createRandomLootForRegion(region);
-                    System.out.println("Enemy dropped: " + it.getName());
-                    player.getInventory().add(it);
+                    if (it != null) {
+                        System.out.println("Enemy dropped: " + it.getName());
+                        player.getInventory().add(it);
+                    }
                 }
                 String ud = EnemyDatabase.getUniqueDropFor(e.getId());
                 if (ud != null) {
@@ -306,17 +385,6 @@ public class InstanceGame {
             }
             System.out.println();
         }
-    }
-
-    private void advanceToNextStage() {
-        clearScreen();
-        System.out.println("The land shifts as your victory echoes. You feel the world rearrange...");
-        System.out.println("\n" + Text.randomCutsceneLine());
-        for (int r=0;r<HEIGHT;r++) for (int c=0;c<WIDTH;c++) explored[r][c]=false;
-        exploredCount=0; int sx=WIDTH/2, sy=HEIGHT/2; player.setPosition(sx, sy); explored[sy][sx]=true; exploredCount++;
-        ItemDatabase.setStage(campaignStage); EnemyDatabase.setStage(campaignStage);
-        switch (campaignStage) { case 2: System.out.println("You are drawn to Region 2 — new dangers and treasures await."); break; case 3: System.out.println("The path to the final stronghold opens. This is the last challenge."); break; default: System.out.println("You feel the world change."); break; }
-        pause();
     }
 
     private void playerTurn(List<Enemy> enemies) {
@@ -399,7 +467,7 @@ public class InstanceGame {
             if (os.contains("Windows")) {
                 new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
             } else {
-                System.out.print("\\033[H\\033[2J");
+                System.out.print("\033[H\033[2J");
                 System.out.flush();
             }
         } catch (Exception e) {

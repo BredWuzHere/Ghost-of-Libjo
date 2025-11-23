@@ -42,7 +42,7 @@ case "performativevaper":
 
 case "tdro_talipapa":
     // Traffic Enforcer – low HP, weak STUN/ARMOR_DOWN
-    e = new SimpleEnemy("tdro_talipapa", "T’dro ng Talipapa", 14 + (currentStage-1)*1, 4, 3, 3 + currentStage, 1, 0.05);
+    e = new SimpleEnemy("tdro_talipapa", "Tdro ng Talipapa", 14 + (currentStage-1)*1, 4, 3, 3 + currentStage, 1, 0.05);
 
     Move tt1 = new Move(
         "traffic_whistle",
