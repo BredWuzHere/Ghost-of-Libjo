@@ -10,6 +10,10 @@ public class ItemDatabase {
         prototypes.put("fire_staff", new Weapon("fire_staff","Fire Staff","A staff imbued with flame.",5,0.08,1.6,100,ElementType.FIRE));
         prototypes.put("leather_armor", new Armor("leather_armor","Leather Armor","Light protective leather.",1,0.05,100));
         prototypes.put("chain_armor", new Armor("chain_armor","Chain Armor","Better protection.",3,0.10,100));
+        prototypes.put("balat_ng_hipon", new Armor("balat_ng_hipon", "Balat ng Hipon", "Matigas sa labas, lambot sa loob.",2,0.00,100));
+        prototypes.put("kalawang_armor", new Armor("kalawang_armor", "Kalawang Armor", "Made from pure, authentic, Gulod rust.",4,0.00,100));
+        prototypes.put("construction_vest", new Armor("construction_vest","Construction Vest","Safety first, kahit sa gulod battles.",4,0.00,120));
+        prototypes.put("ukayukay_jacket", new Armor("ukayukay_jacket","Ukay-Ukay Jacket","Vintage jacket na amopy lumang aparador",3,0.07,90));
         prototypes.put("relic_plus_ap", new Relic("relic_plus_ap","Relic of Swiftness","+1 Max AP.",1,0.0,0.0,0));
         prototypes.put("relic_crit", new Relic("relic_crit","Relic of Precision","+10% Crit Chance.",0,0.10,0.0,0));
         prototypes.put("hp_potion", new Consumable("hp_potion","Health Potion","Restores 10 HP.", Consumable.ConsumableType.HEAL, 10));
@@ -19,6 +23,9 @@ public class ItemDatabase {
         prototypes.put("gulod_amulet", new Relic("gulod_amulet","Gulod Amulet","Warm, throbbing with heat. Grants modest strength and resilience.",5,0.20,0.10,18));
         prototypes.put("dechavez_claw", new Weapon("dechavez_claw","DeChavez Claw","Sharp and ledger-lined.",8,0.08,1.6,90,ElementType.NONE));
         prototypes.put("mirage_shard", new Weapon("mirage_shard","Mirage Shard","Shimmers with illusion.",22,0.50,2.5,100,ElementType.ICE));
+        prototypes.put("blade_of_hepatytis", new Weapon("blade_of_hepatytis","Blade of Hepatytis","penetration.", 18, 0.10, 1.2, 100, ElementType.NONE));
+        prototypes.put("fishball_stick", new Weapon("fishball_stick","Fishball Stick Stabber","small but terrible", 16, 0.12, 1.4, 100, ElementType.NONE));
+        prototypes.put("electricfan_blade", new Weapon("electricfan_blade","Electric Fan Blade Toss","Sharp fan blade. Hard to aim but deadly.", 35, 0.05, 0.9, 100, ElementType.NONE));
     }
 
     public static void setStage(int stage) { currentStage = Math.max(1, stage); }
