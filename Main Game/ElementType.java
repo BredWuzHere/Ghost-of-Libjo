@@ -1,1 +1,1 @@
-public enum ElementType { NONE, ELECTRIC, FIRE, ICE }
+public enum ElementType { NONE, ELECTRIC, FIRE, ICE, POISON }
