@@ -8,21 +8,18 @@ public class EnemyDatabase {
 
     public static Enemy createEnemy(String id) {
         Enemy e;
-        // New parameters: maxHp, speed, ap, damage, armor, EVASION
         
         switch (id) {
-            /* ... existing code above ... */
 
 case "performativevaper":
-    // Low Evasion (0.05), weak early enemy
     e = new SimpleEnemy("vaper", "Performative Vaper", 12 + (currentStage-1)*1, 3, 2, 3 + currentStage, 1, 0.05);
 
     Move g1 = new Move(
         "bane_ghost_hipak",
         "Bane Ghost Hipak",
         "Blows thick poisoned air at you matcha flavored, using bane technique.",
-        1,  // reduced base damage
-        1.05,  // slightly lower multiplier
+        1,  
+        1.05,   
         new StatusEffect(StatusEffect.Kind.POISON, "Vape Poison", "Toxic air damage.", 2, 1, 0.0),  // shorter poison
         0,
         ElementType.NONE
@@ -32,7 +29,7 @@ case "performativevaper":
         "Nicotine Induced Rage",
         "The vaper goes into berserk slapping everything with his vape.",
         1,
-        0.8,  // lower multiplier
+        0.8,  
         null,
         0,
         ElementType.NONE
@@ -41,7 +38,6 @@ case "performativevaper":
     break;
 
 case "tdro_talipapa":
-    // Traffic Enforcer – low HP, weak STUN/ARMOR_DOWN
     e = new SimpleEnemy("tdro_talipapa", "Tdro ng Talipapa", 14 + (currentStage-1)*1, 4, 3, 3 + currentStage, 1, 0.05);
 
     Move tt1 = new Move(
@@ -227,7 +223,6 @@ case "tau_gamma_officer":
 // gulod enemies
 
 case "gas_station_boy":
-    // Gas Station Boy – quick but glassy, can POISON and SLOW
     e = new SimpleEnemy("gas_station_boy", "Gas Station Boy ng Total", 25 + (currentStage-1)*3, 6, 5, 6 + currentStage, 2, 0.08);
 
     Move gsb1 = new Move(
@@ -254,7 +249,6 @@ case "gas_station_boy":
     break;
 
 case "lpu_highschooler":
-    // LPU Highschooler – annoying, can STUN and CRIT_DOWN
     e = new SimpleEnemy("lpu_highschooler", "LPU High Schooler", 17 + (currentStage-1)*2, 5, 6, 5 + currentStage, 2, 0.1);
 
     Move lpu1 = new Move(
@@ -281,7 +275,6 @@ case "lpu_highschooler":
     break;
 
 case "fishball_vendor":
-    // Nagbebenta ng Fishball – can ARMOR_DOWN and POISON
     e = new SimpleEnemy("fishball_vendor", "Nagbebenta ng Fishball", 19 + (currentStage-1)*3, 6, 4, 6 + currentStage, 2, 0.07);
 
     Move fv1 = new Move(
@@ -308,7 +301,6 @@ case "fishball_vendor":
     break;
 
 case "dali_employee":
-    // Dali Employee – fast, weak but multiple attacks, can SLOW
     e = new SimpleEnemy("dali_employee", "Dali Employee", 18 + (currentStage-1)*2, 7, 5, 5 + currentStage, 2, 0.1);
 
     Move de1 = new Move(
@@ -361,7 +353,6 @@ case "bayakos_tito":
     break;
 
 case "samgyup_employee":
-    // Samgyup Employee – medium tanky, SLOW + CRIT_DOWN
     e = new SimpleEnemy("samgyup_employee", "Samgyup Employee", 22 + (currentStage-1)*3, 6, 5, 6 + currentStage, 2, 0.08);
 
     Move se1 = new Move(
@@ -576,7 +567,6 @@ case "scholar_ebd":
 
 
             case "hipon":
-                // Boss: Very High Evasion (0.25)
                 e = new Boss("hipon", "Hipon of Libjo", 25 + (currentStage - 1)*5, 4, 4, 5 + currentStage, 1, 1, 0.40, 0.35);
                 Move h1 = new Move("tentacle_lash", "Tentacle Lash", "A sticky tentacle lash.", 2, 1.0, new StatusEffect(StatusEffect.Kind.CRIT_DOWN, "Wet Goo", "Slippery -crit down", 2, 0, -0.10), 3, ElementType.NONE);
                 Move h2 = new Move("ink_blast", "Ink Blast", "Dark ink that chills and reduces attack.", 3, 1.1,new StatusEffect(StatusEffect.Kind.GENERIC, "Chilled Ink", "Reduces attack", 2, 0, -0.10), 2, ElementType.ICE);
@@ -584,7 +574,6 @@ case "scholar_ebd":
                 break;
 
             case "gulod":
-                // Boss: Low Evasion (0.05) - Tanky, heavily armored
                 e = new Boss("gulod", "Terror of Gulod", 55 + (currentStage - 1)*8, 3, 4, 8 + currentStage, 3, 2, 0.10, 0.05);
                 Move gA = new Move("earth_slam", "Earth Slam", "Smashes the ground.", 2, 1.0, null, 0, ElementType.NONE);
                 Move gB = new Move("lava_fury", "Lava Fury", "Burning onslaught.", 4, 1.4, new StatusEffect(StatusEffect.Kind.BURN, "Lava Burn", "Burning damage", 3, 2, 0.0), 3, ElementType.FIRE);
@@ -592,7 +581,6 @@ case "scholar_ebd":
                 break;
 
             case "sales":
-                // Boss: High Evasion (0.20) - Mirage/Illusion-based
                 e = new Boss("sales", "Sales the Corrupt Mirage", 80 + (currentStage - 1)*12, 4, 4, 10 + currentStage, 4, 3, 0.05, 0.20);
                 Move sA = new Move("mirage_blade", "Mirage Blade", "Spectral slashes from illusions.", 2, 1.0, null, 0, ElementType.NONE);
                 Move sB = new Move("electro_contract", "Electro Contract", "A shocking contract that jolts and spreads.", 3, 1.1, new StatusEffect(StatusEffect.Kind.JOLT, "Contracted Jolt", "Chance to stun", 1, 0, 0.0), 1, ElementType.ELECTRIC);
@@ -600,8 +588,7 @@ case "scholar_ebd":
                 break;
 
             case "dechavez":
-                // Boss: Moderate Evasion (0.10) - Highly precise and skilled
-                e = new Boss("dechavez", "DeChavez, The True Chairman", 120 + (currentStage-1)*20, 5, 4, 14 + currentStage, 6, 4, 0.02, 0.10);
+                    e = new Boss("dechavez", "DeChavez, The True Chairman", 120 + (currentStage-1)*20, 5, 4, 14 + currentStage, 6, 4, 0.02, 0.10);
                 Move dd1 = new Move("audit_strike", "Audit Strike", "A precise, brutal strike.", 2, 1.1, null, 0, ElementType.NONE);
                 Move dd2 = new Move("cold_audit", "Cold Audit", "Freezing debuff that weakens defenses.", 4, 1.3,  new StatusEffect(StatusEffect.Kind.ARMOR_DOWN, "Cold Audit", "Armor down and attack reduced", 3, -2, -0.10), 3, ElementType.ICE);
                 e.addMove(dd1); e.addMove(dd2);
@@ -610,7 +597,6 @@ case "scholar_ebd":
             
 
             default:
-                // Default: Low Evasion (0.05)
                 e = new SimpleEnemy("rat", "Giant Rat", 6 + (currentStage-1), 4, 4, 2 + currentStage/2, 0, 0.05);
                 Move def = new Move("bite", "Bite", "A bite.", 1, 0.8, null, 0, ElementType.NONE);
                 e.addMove(def);
