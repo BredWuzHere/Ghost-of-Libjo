@@ -176,6 +176,40 @@ Development Updates
   - Updated all enemy moves in `EnemyDatabase.createEnemy(...)` that used the generic `StatusEffect.Kind.GENERIC` to use the appropriate dedicated kinds (`STUN`, `JOLT`, `CRIT_DOWN`, `ARMOR_DOWN`) for clearer combat intent.
 
 
+**11/30/25 - (Aaron)**
+- **`iron_sword`**: `Iron Sword` — A sturdy iron sword. (Weapon)
+- **`fire_staff`**: `Fire Staff` — A staff imbued with flame; includes fire moves and a burn status effect. (Weapon)
+- **`leather_armor`**: `Leather Armor` — Light protective leather. (Armor)
+- **`chain_armor`**: `Chain Armor` — Better protection. (Armor)
+- **`balat_ng_hipon`**: `Balat ng Hipon` — Matigas sa labas, lambot sa loob. (Armor)
+- **`kalawang_armor`**: `Kalawang Armor` — Made from pure, authentic, Gulod rust. (Armor)
+- **`construction_vest`**: `Construction Vest` — Safety first, kahit sa gulod battles. (Armor)
+- **`ukayukay_jacket`**: `Ukay-Ukay Jacket` — Vintage jacket na amoy lumang aparador. (Armor)
+- **`relic_plus_ap`**: `Relic of Swiftness` — +1 Max AP. (Relic)
+- **`relic_crit`**: `Relic of Precision` — +10% Crit Chance. (Relic)
+- **`extra_rice`**: `Extra Rice` — Restores 8 HP. (Consumable)
+- **`hp_potion`**: `Health Potion` — Restores 10 HP. (Consumable)
+- **`lumpia_roll`**: `Lumpia Roll` — Restores 5 HP. (Consumable)
+- **`sinigang_soup`**: `Sinigang Soup` — Restores 15 HP. (Consumable)
+- **`goto_bowl`**: `Goto Bowl` — Restores 12 HP. (Consumable)
+- **`kape_3in1`**: `Kape 3-in-1` — Boosts speed temporarily. (Consumable / Buff)
+- **`red_horse`**: `Red Horse` — Increase attack slightly. (Consumable / Buff)
+- **`mentos_fresh`**: `Mentos Fresh` — Boosts evasion due to 'freshness'. (Consumable / Buff)
+- **`pancit_canton`**: `Pancit Canton` — Increases energy/attack for a bit. (Consumable / Buff)
+- **`elixir_of_life`**: `Elixir of Life` — Permanently increases Max HP by 50. (Relic)
+- **`dev_sword`**: `Dev Sword` — A dev/test sword (very high stats). (Weapon)
+- **`hipon_tentacle`**: `Hipon Tentacle` — A strange slippery tentacle. (Weapon)
+- **`gulod_amulet`**: `Gulod Amulet` — Warm, throbbing with heat. Grants modest strength and resilience. (Relic)
+- **`dechavez_claw`**: `DeChavez Claw` — Sharp and ledger-lined. (Weapon)
+- **`mirage_shard`**: `Mirage Shard` — Shimmers with illusion. (Weapon)
+- **`blade_of_hepatytis`**: `Blade of Hepatytis` — Penetration-focused blade with toxic moves. (Weapon)
+- **`fishball_stick`**: `Fishball Stick Stabber` — Small but terrible. (Weapon)
+- **`electricfan_blade`**: `Electric Fan Blade Toss` — Sharp fan blade. Hard to aim but deadly (has electric-themed move). (Weapon)
+
+Notes:
+- Many weapon items include predefined `Move` entries (e.g., `fire_staff` has `Fire Burst` and `Ember Slap` with a Burn effect).  
+- Consumables and relics provide heals or passive bonuses; relics like `elixir_of_life` permanently add Max HP.  
+- The in-game loot pool is stage-aware and pulls from these IDs via `ItemDatabase.createRandomLootForRegion(stage)`.
 
 License
 This project uses the MIT License — see `LICENSE` for details.
