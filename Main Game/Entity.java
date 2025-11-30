@@ -34,8 +34,22 @@ public class Entity {
     public void spendAp(int n){ this.ap = Math.max(0, this.ap - n); }
     public boolean isAlive(){ return hp > 0; }
 
+    /**
+     * Effective armor after status modifiers.
+     */
+    public int getEffectiveArmor() {
+        int armorMod = 0;
+        for (StatusEffect se : activeStatuses) {
+            if (se.getKind() == StatusEffect.Kind.ARMOR_DOWN) {
+                armorMod -= se.getIntValue(); 
+            }
+        }
+        int eff = armor + armorMod;
+        return Math.max(0, eff);
+    }
+
     public void takeDamage(int d) {
-        int mitigated = Math.max(0, d - armor);
+        int mitigated = Math.max(0, d - getEffectiveArmor());
         hp -= mitigated;
         if (hp < 0) hp = 0;
         System.out.println(name + " takes " + mitigated + " damage! (HP: " + hp + "/" + maxHp + ")");
@@ -60,17 +74,42 @@ public class Entity {
 
     public List<StatusEffect> getActiveStatuses(){ return activeStatuses; }
 
+    /**
+     * process status effects at the start of the entity's turn:
+     * - apply BURN/POISON damage per tick
+     * - tick down durations and remove expired effects
+     */
     public void processStatusEffectsStartTurn() {
         Iterator<StatusEffect> it = activeStatuses.iterator();
         while (it.hasNext()) {
             StatusEffect se = it.next();
-            if (se.getKind() == StatusEffect.Kind.BURN) {
-                int dmg = se.getIntValue();
-                hp = Math.max(0, hp - dmg);
-                System.out.println(name + " suffers " + dmg + " burn damage from " + se.getName() + " (" + hp + "/" + maxHp + ")");
+            switch (se.getKind()) {
+                case BURN:
+                    int burnDmg = se.getIntValue();
+                    hp = Math.max(0, hp - burnDmg);
+                    System.out.println(name + " suffers " + burnDmg + " burn damage from " + se.getName() + " (" + hp + "/" + maxHp + ")");
+                    break;
+                case POISON:
+                    int poisonDmg = se.getIntValue();
+                    hp = Math.max(0, hp - poisonDmg);
+                    System.out.println(name + " suffers " + poisonDmg + " poison damage from " + se.getName() + " (" + hp + "/" + maxHp + ")");
+                    break;
+                case JOLT:
+                    // JOLT is treated as a short stun indicator
+                    System.out.println(name + " is jolted by " + se.getName() + " (" + se.getRemainingTurns() + " turns left)");
+                    break;
+                case SLOW:
+                case ARMOR_DOWN:
+                case CRIT_DOWN:
+                case SLIPPERY:
+                case GENERIC:
+                case STUN:
+                    // no tick damage  effect used by other calculations (hasStatusEffect/getEffectiveArmor/avoidsAttackFrom)
+                    break;
             }
             se.tick();
             if (se.getRemainingTurns() <= 0) {
+<<<<<<< HEAD
                 // If a buff expired, remove its effect
                 if (se.getKind() == StatusEffect.Kind.BUFF_DEFENSE) {
                     this.armor = Math.max(0, this.armor - se.getIntValue());
@@ -79,9 +118,50 @@ public class Entity {
                     this.damage = Math.max(0, this.damage - se.getIntValue());
                     System.out.println(name + "'s buff " + se.getName() + " has expired. (-" + se.getIntValue() + " attack)");
                 }
+=======
+>>>>>>> ac81ad4dd2b9dacba1e9a9d9593f48c022a8b1f6
                 it.remove();
             }
         }
+    }
+
+    /**
+     * Check if this entity currently has a status effect of a given kind.
+     * Treat JOLT as equivalent to STUN for convenience when callers check STUN.
+     */
+    public boolean hasStatusEffect(StatusEffect.Kind kind) {
+        for (StatusEffect se : activeStatuses) {
+            if (se.getKind() == kind) return true;
+        }
+        if (kind == StatusEffect.Kind.STUN) {
+            for (StatusEffect se : activeStatuses) if (se.getKind() == StatusEffect.Kind.JOLT) return true;
+        }
+        return false;
+    }
+
+    /**
+     * returns true if an incoming attack is avoided (misses) based on:
+     * - the target's SLIPPERY status sum,
+     * - speed difference (target.speed - attackerSpeed) * scalar
+     * scalar currently 0.02 (2% per speed point). Clamp between 0.0 and 0.95.
+     */
+    public boolean avoidsAttackFrom(int attackerSpeed) {
+        double statusEvasion = activeStatuses.stream()
+            .filter(e -> e.getKind() == StatusEffect.Kind.SLIPPERY)
+            .mapToDouble(StatusEffect::getDblValue)
+            .sum();
+
+        double speedDiff = (double)this.speed - (double)attackerSpeed;
+        double speedModifier = speedDiff * 0.02; 
+
+        double totalMissChance = statusEvasion + speedModifier;
+        totalMissChance = Math.max(0.0, Math.min(0.95, totalMissChance));
+
+        if (Math.random() < totalMissChance) {
+            System.out.println(this.name + " dodged the attack! (missChance=" + String.format("%.2f", totalMissChance) + ")");
+            return true;
+        }
+        return false;
     }
 
     public void setDifficulty(int d){ this.difficulty = Math.max(1,d); }

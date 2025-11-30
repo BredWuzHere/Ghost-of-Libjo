@@ -16,7 +16,11 @@ public class ItemDatabase {
         prototypes.put("ukayukay_jacket", new Armor("ukayukay_jacket","Ukay-Ukay Jacket","Vintage jacket na amopy lumang aparador",3,0.07,90));
         prototypes.put("relic_plus_ap", new Relic("relic_plus_ap","Relic of Swiftness","+1 Max AP.",1,0.0,0.0,0));
         prototypes.put("relic_crit", new Relic("relic_crit","Relic of Precision","+10% Crit Chance.",0,0.10,0.0,0));
+        prototypes.put("extra_rice", new Consumable("extra_rice","Extra Rice","Restores 8 HP.", Consumable.ConsumableType.HEAL, 8));
         prototypes.put("hp_potion", new Consumable("hp_potion","Health Potion","Restores 10 HP.", Consumable.ConsumableType.HEAL, 10));
+        prototypes.put("lumpia_roll", new Consumable("lumpia_roll","Lumpia Roll","Restores 5 HP.", Consumable.ConsumableType.HEAL, 5));
+        prototypes.put("sinigang_soup", new Consumable("sinigang_soup","Sinigang Soup","Restores 15 HP.", Consumable.ConsumableType.HEAL, 15));
+        prototypes.put("goto_bowl", new Consumable("goto_bowl","Goto Bowl","Restores 12 HP.", Consumable.ConsumableType.HEAL, 12));
         prototypes.put("elixir_of_life", new Relic("elixir_of_life","Elixir of Life","Permanently increases Max HP by 50.",0,0.0,0.0,50));
         prototypes.put("dev_sword", new Weapon("dev_sword","Dev Sword","A dev sword.",2000,100,10.5,100,ElementType.NONE));
         prototypes.put("hipon_tentacle", new Weapon("hipon_tentacle","Hipon Tentacle","A strange slippery tentacle.",2,0.15,1.8,70,ElementType.NONE));
@@ -71,10 +75,13 @@ public class ItemDatabase {
                 Move m2 = new Move("hipon_frenzy","Hipon Frenzy","Rapid multi-tentacle assault.",3,1.6,null,0,ElementType.NONE);
                 w.addMove(m1); w.addMove(m2);
 
+            } else if ("mirage_shard".equals(id)) {
+                Move m1 = new Move("illusory_stab","Illusory Stab","A confusing phasing stab.",2,1.0,null,0,ElementType.NONE);
+                Move m2 = new Move("refract_strike","Refract Strike","A sharp strike that bends light.",3,1.5,null,0,ElementType.ELECTRIC);
+                w.addMove(m1); w.addMove(m2); 
+            
             } else if ("dev_sword".equals(id)) {
-    // FIX: Added the specific enum value JOLT
                 StatusEffect jolt = new StatusEffect(StatusEffect.Kind.JOLT, "Jolts", "Electrifies enemies and stuns for a few HP/turn", 1, 100, 0.0);
-    
                 Move m1 = new Move("equinox_slash", "Equinox Slash", "Obliterate Foes In One hit.", 0, 10.0, null, 0, ElementType.NONE);
                 Move m2 = new Move("suayan_move", "Suayan Strike", "Trash talk the enemies.", 0, 100.6, jolt, 5, ElementType.ELECTRIC);
                 w.addMove(m1); w.addMove(m2);
@@ -103,9 +110,24 @@ public class ItemDatabase {
 
     public static Item createRandomLootForRegion(int region) {
         List<String> pool = new ArrayList<>();
-        if (currentStage==1) { pool.add("hp_potion"); pool.add("iron_sword"); pool.add("leather_armor"); pool.add("relic_crit"); pool.add("fishball_stick"); pool.add("balat_ng_hipon"); pool.add("kalawang_armor"); pool.add("ukayukay_jacket"); pool.add("hipon_tentacle"); }
-        else if (currentStage==2) { pool.add("hp_potion"); pool.add("fire_staff"); pool.add("chain_armor"); pool.add("relic_plus_ap"); pool.add("electricfan_blade"); pool.add("construction_vest"); pool.add("blase_of_hepatytis"); pool.add("de_chavez_claw");}
-        else { pool.add("hp_potion"); pool.add("fire_staff"); pool.add("chain_armor"); pool.add("relic_crit"); }
+        if (currentStage==1) { pool.add("hp_potion"); pool.add("fire_staff"); pool.add("chain_armor"); pool.add("relic_plus_ap"); 
+        pool.add("electricfan_blade"); pool.add("construction_vest"); pool.add("blase_of_hepatytis"); pool.add("de_chavez_claw"); 
+        pool.add("hipon_tentacle"); pool.add("balat_ng_hipon"); pool.add("kalawang_armor"); pool.add("ukayukay_jacket"); 
+        pool.add("leather_armor"); pool.add("relic_crit"); pool.add("fishball_stick");pool.add("mirage_shard"); 
+        pool.add("gulod_amulet"); pool.add("extra_rice"); pool.add("lumpia_roll"); pool.add("sinigang_soup"); pool.add("goto_bowl");}
+        
+        else if (currentStage==2) { pool.add("hp_potion"); pool.add("fire_staff"); pool.add("chain_armor"); pool.add("relic_plus_ap"); 
+        pool.add("electricfan_blade"); pool.add("construction_vest"); pool.add("blase_of_hepatytis"); pool.add("de_chavez_claw"); 
+        pool.add("hipon_tentacle"); pool.add("balat_ng_hipon"); pool.add("kalawang_armor"); pool.add("ukayukay_jacket"); 
+        pool.add("leather_armor"); pool.add("relic_crit"); pool.add("fishball_stick");pool.add("mirage_shard"); 
+        pool.add("gulod_amulet"); pool.add("extra_rice"); pool.add("lumpia_roll"); pool.add("sinigang_soup"); pool.add("goto_bowl");}
+        
+        else { pool.add("hp_potion"); pool.add("fire_staff"); pool.add("chain_armor"); pool.add("relic_plus_ap"); 
+        pool.add("electricfan_blade"); pool.add("construction_vest"); pool.add("blase_of_hepatytis"); pool.add("de_chavez_claw"); 
+        pool.add("hipon_tentacle"); pool.add("balat_ng_hipon"); pool.add("kalawang_armor"); pool.add("ukayukay_jacket"); 
+        pool.add("leather_armor"); pool.add("relic_crit"); pool.add("fishball_stick");pool.add("mirage_shard"); 
+        pool.add("gulod_amulet"); pool.add("extra_rice"); pool.add("lumpia_roll"); pool.add("sinigang_soup"); pool.add("goto_bowl");}
+        
         return createItem(pool.get(rnd.nextInt(pool.size())));
     }
 }

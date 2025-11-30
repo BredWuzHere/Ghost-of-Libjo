@@ -226,11 +226,10 @@ public class InstanceGame {
                 Thread.sleep(delayMillis);
             }
         } catch (InterruptedException e) {
-            System.out.print(text); // If interrupted, print remaining instantly
+            System.out.print(text); 
         }
     }
 
-    // --- NEW ANIMATED TRANSITIONS END ---
 
     private int getRegionAt(int x, int y) {
         int halfW = WIDTH/2, halfH = HEIGHT/2;
