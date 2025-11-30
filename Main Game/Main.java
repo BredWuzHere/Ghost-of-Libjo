@@ -5,12 +5,12 @@ public class Main {
         Scanner in = new Scanner(System.in);
         while (true) {
             clearScreen();
-            System.out.println("=== Roguelike Console RPG ===");
-            System.out.println("1) Play Game");
-            System.out.println("2) Developer Mode (playtest, max stats)");
-            System.out.println("3) About Game");
-            System.out.println("4) Quit");
-            System.out.print("Choice: ");
+            displayTitle();
+            System.out.println("\n" + Color.YELLOW + "1) Play Game" + Color.RESET);
+            System.out.println(Color.YELLOW + "2) Developer Mode (playtest, max stats)" + Color.RESET);
+            System.out.println(Color.YELLOW + "3) About Game" + Color.RESET);
+            System.out.println(Color.YELLOW + "4) Quit" + Color.RESET);
+            System.out.print(Color.CYAN + "Choice: " + Color.RESET);
             String c = in.nextLine().trim();
             if (c.equals("1")) {
                 InstanceGame g = new InstanceGame(in, false);
@@ -20,13 +20,13 @@ public class Main {
                 g.start();
             } else if (c.equals("3")) {
                 clearScreen();
-                System.out.println("Roguelike Console RPG - Text driven.");
-                System.out.println("Explore rooms, fight enemies, collect items, and defeat region bosses.");
-                System.out.println("Controls: w/a/s/d to move, i to open inventory.");
+                System.out.println(Color.BRIGHT_BLUE + "Roguelike Console RPG - Text driven." + Color.RESET);
+                System.out.println(Color.BRIGHT_BLUE + "Explore rooms, fight enemies, collect items, and defeat region bosses." + Color.RESET);
+                System.out.println(Color.BRIGHT_BLUE + "Controls: w/a/s/d to move, i to open inventory." + Color.RESET);
                 System.out.println("\nPress Enter to return to menu...");
                 in.nextLine();
             } else if (c.equals("4")) {
-                System.out.println("Goodbye!");
+                System.out.println(Color.BRIGHT_YELLOW + "Goodbye!" + Color.RESET);
                 break;
             } else {
                 System.out.println("Unknown choice. Press Enter.");
@@ -34,6 +34,12 @@ public class Main {
             }
         }
         in.close();
+    }
+
+    private static void displayTitle() {
+        System.out.println();
+        System.out.println(Color.RED + "=== GHOST OF BATANGAS ===" + Color.RESET);
+        System.out.println();
     }
 
     private static void clearScreen() {

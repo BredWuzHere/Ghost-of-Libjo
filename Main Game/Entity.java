@@ -52,7 +52,7 @@ public class Entity {
         int mitigated = Math.max(0, d - getEffectiveArmor());
         hp -= mitigated;
         if (hp < 0) hp = 0;
-        System.out.println(name + " takes " + mitigated + " damage! (HP: " + hp + "/" + maxHp + ")");
+        System.out.println(Color.RED + name + " takes " + mitigated + " damage! (HP: " + hp + "/" + maxHp + ")" + Color.RESET);
     }
 
     public void heal(int amount) {
@@ -64,10 +64,10 @@ public class Entity {
         // If this is a buff, apply its immediate effect (defense or attack)
         if (s.getKind() == StatusEffect.Kind.BUFF_DEFENSE) {
             this.armor += s.getIntValue();
-            System.out.println(name + " gains +" + s.getIntValue() + " armor from " + s.getName() + ".");
+            System.out.println(Color.CYAN + name + " gains +" + s.getIntValue() + " armor from " + s.getName() + "." + Color.RESET);
         } else if (s.getKind() == StatusEffect.Kind.BUFF_ATTACK) {
             this.damage += s.getIntValue();
-            System.out.println(name + " gains +" + s.getIntValue() + " attack from " + s.getName() + ".");
+            System.out.println(Color.CYAN + name + " gains +" + s.getIntValue() + " attack from " + s.getName() + "." + Color.RESET);
         }
         activeStatuses.add(s.copy());
     }
@@ -87,16 +87,16 @@ public class Entity {
                 case BURN:
                     int burnDmg = se.getIntValue();
                     hp = Math.max(0, hp - burnDmg);
-                    System.out.println(name + " suffers " + burnDmg + " burn damage from " + se.getName() + " (" + hp + "/" + maxHp + ")");
+                    System.out.println(Color.BRIGHT_RED + name + " suffers " + burnDmg + " burn damage from " + se.getName() + " (" + hp + "/" + maxHp + ")" + Color.RESET);
                     break;
                 case POISON:
                     int poisonDmg = se.getIntValue();
                     hp = Math.max(0, hp - poisonDmg);
-                    System.out.println(name + " suffers " + poisonDmg + " poison damage from " + se.getName() + " (" + hp + "/" + maxHp + ")");
+                    System.out.println(Color.PURPLE + name + " suffers " + poisonDmg + " poison damage from " + se.getName() + " (" + hp + "/" + maxHp + ")" + Color.RESET);
                     break;
                 case JOLT:
                     // JOLT is treated as a short stun indicator
-                    System.out.println(name + " is jolted by " + se.getName() + " (" + se.getRemainingTurns() + " turns left)");
+                    System.out.println(Color.YELLOW + name + " is jolted by " + se.getName() + " (" + se.getRemainingTurns() + " turns left)" + Color.RESET);
                     break;
                 case SLOW:
                 case ARMOR_DOWN:
@@ -109,17 +109,14 @@ public class Entity {
             }
             se.tick();
             if (se.getRemainingTurns() <= 0) {
-<<<<<<< HEAD
                 // If a buff expired, remove its effect
                 if (se.getKind() == StatusEffect.Kind.BUFF_DEFENSE) {
                     this.armor = Math.max(0, this.armor - se.getIntValue());
-                    System.out.println(name + "'s buff " + se.getName() + " has expired. (-" + se.getIntValue() + " armor)");
+                    System.out.println(Color.YELLOW + name + "'s buff " + se.getName() + " has expired. (-" + se.getIntValue() + " armor)" + Color.RESET);
                 } else if (se.getKind() == StatusEffect.Kind.BUFF_ATTACK) {
                     this.damage = Math.max(0, this.damage - se.getIntValue());
-                    System.out.println(name + "'s buff " + se.getName() + " has expired. (-" + se.getIntValue() + " attack)");
+                    System.out.println(Color.YELLOW + name + "'s buff " + se.getName() + " has expired. (-" + se.getIntValue() + " attack)" + Color.RESET);
                 }
-=======
->>>>>>> ac81ad4dd2b9dacba1e9a9d9593f48c022a8b1f6
                 it.remove();
             }
         }
@@ -158,7 +155,7 @@ public class Entity {
         totalMissChance = Math.max(0.0, Math.min(0.95, totalMissChance));
 
         if (Math.random() < totalMissChance) {
-            System.out.println(this.name + " dodged the attack! (missChance=" + String.format("%.2f", totalMissChance) + ")");
+            System.out.println(Color.BRIGHT_GREEN + this.name + " dodged the attack! (missChance=" + String.format("%.2f", totalMissChance) + ")" + Color.RESET);
             return true;
         }
         return false;

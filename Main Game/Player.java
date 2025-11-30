@@ -53,7 +53,7 @@ public class Player extends Entity {
         if (amount <= 0 || turns <= 0) return;
         StatusEffect buff = new StatusEffect(StatusEffect.Kind.BUFF_DEFENSE, "Temporary Defense", "Increases armor by " + amount, turns, amount, 0.0);
         applyStatus(buff);
-        System.out.println(getName() + " gains a buff of +" + amount + " armor for " + buff.getRemainingTurns() + " turns.");
+        System.out.println(Color.CYAN + getName() + " gains a buff of +" + amount + " armor for " + buff.getRemainingTurns() + " turns." + Color.RESET);
     }
 
     // Add an attack buff (increases damage) — default duration 3 turns
@@ -66,6 +66,6 @@ public class Player extends Entity {
         if (amount <= 0 || turns <= 0) return;
         StatusEffect buff = new StatusEffect(StatusEffect.Kind.BUFF_ATTACK, "Temporary Offense", "Increases attack by " + amount, turns, amount, 0.0);
         applyStatus(buff);
-        System.out.println(getName() + " gains a buff of +" + amount + " attack for " + buff.getRemainingTurns() + " turns.");
+        System.out.println(Color.CYAN + getName() + " gains a buff of +" + amount + " attack for " + buff.getRemainingTurns() + " turns." + Color.RESET);
     }
 }

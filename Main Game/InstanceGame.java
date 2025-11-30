@@ -49,15 +49,7 @@ public class InstanceGame {
         while (running) {
             clearScreen();
             renderMap();
-            if (campaignStage == 1) System.out.println("Region: " + campaignStage + "/" + MAX_CAMPAIGN_STAGE + " (Libjo Central)");
-            else if (campaignStage == 2) System.out.println("Region: " + campaignStage + "/" + MAX_CAMPAIGN_STAGE + " (Gulod Itaas)");
-            else if (campaignStage == 3) System.out.println("Region: " + campaignStage + "/" + MAX_CAMPAIGN_STAGE + " (Batangas City Hall)");
-            else System.out.println("No Region Game is broken lol");
-
-
-            System.out.println("HP: " + player.getHp() + "/" + player.getMaxHp() +
-                    "  AP: " + player.getAp() + "  Weapon: " + (player.getWeapon()!=null?player.getWeapon().getName():"None"));
-            System.out.println("Inventory: " + player.getInventory().size() + " items. (type 'i' to inspect)");
+            displayTurnStatus();
             System.out.print("Move (w/a/s/d) or (i)nventory or (q)uit run: ");
             String cmd = in.nextLine().trim().toLowerCase();
             if (cmd.equals("q")) { System.out.println("You abandoned your run."); pause(); break; }
@@ -240,18 +232,18 @@ public class InstanceGame {
     }
 
     private void renderMap() {
-        System.out.println("Map Legend: [ ] = unexplored  , [E] = explored  , [P] = you\n");
+        System.out.println(Color.CYAN + "Map Legend: " + Color.BRIGHT_GREEN + "[P]" + Color.RESET + Color.CYAN + " = you, " + Color.BRIGHT_RED + "[E]" + Color.RESET + Color.CYAN + " = explored, " + Color.BRIGHT_BLACK + "[ ]" + Color.RESET + Color.CYAN + " = unexplored" + Color.RESET + "\n");
         for (int r=0;r<HEIGHT;r++) {
             StringBuilder line = new StringBuilder();
             for (int c=0;c<WIDTH;c++) {
-                if (player.getX()==c && player.getY()==r) line.append("[P]");
-                else if (explored[r][c]) line.append("[E]");
-                else line.append("[ ]");
+                if (player.getX()==c && player.getY()==r) line.append(Color.BRIGHT_GREEN + "[P]" + Color.RESET);
+                else if (explored[r][c]) line.append(Color.BRIGHT_RED + "[E]" + Color.RESET);
+                else line.append(Color.BRIGHT_BLACK + "[ ]" + Color.RESET);
                 if (c<WIDTH-1) line.append("-");
             }
             System.out.println(line.toString());
         }
-        System.out.println("Explored rooms: " + exploredCount + "/" + totalRooms + "\n");
+        System.out.println(Color.CYAN + "Explored rooms: " + exploredCount + "/" + totalRooms + "\n" + Color.RESET);
     }
 
     private boolean move(String dir) {
@@ -327,6 +319,7 @@ public class InstanceGame {
                 if (!player.isAlive() || enemies.stream().noneMatch(Enemy::isAlive)) break;
                 if (ta.isPlayer()) {
                     playerTurn(enemies);
+                    clearScreen();
                 } else {
                     Enemy e = ta.getEnemy();
                     if (e.isAlive()) {
@@ -334,6 +327,7 @@ public class InstanceGame {
                         e.takeTurn(player);
                         pause();
                         showPlayerHudDuringCombat();
+                        clearScreen();
                     }
                 }
             }
@@ -472,6 +466,21 @@ public class InstanceGame {
         } catch (Exception e) {
             for (int i = 0; i < 50; i++) System.out.println();
         }
+    }
+
+    private void displayTurnStatus() {
+        String hpColor = player.getHp() < player.getMaxHp() / 3 ? Color.BRIGHT_RED : Color.GREEN;
+        String regionName = switch (campaignStage) {
+            case 1 -> "Libjo Central";
+            case 2 -> "Gulod Itaas";
+            case 3 -> "Batangas City Hall";
+            default -> "Unknown Region";
+        };
+        System.out.println(Color.CYAN + "========== PLAYER TURN ==========" + Color.RESET);
+        System.out.println(Color.BRIGHT_MAGENTA + "Region: " + campaignStage + "/" + MAX_CAMPAIGN_STAGE + " (" + regionName + ")" + Color.RESET);
+        System.out.println(hpColor + "HP: " + player.getHp() + "/" + player.getMaxHp() + Color.RESET + " | " + Color.BLUE + "AP: " + player.getAp() + Color.RESET + " | " + Color.YELLOW + "Weapon: " + (player.getWeapon() != null ? player.getWeapon().getName() : "None") + Color.RESET);
+        System.out.println(Color.BRIGHT_CYAN + "Inventory: " + player.getInventory().size() + " items. (type 'i' to inspect)" + Color.RESET);
+        System.out.println(Color.CYAN + "================================" + Color.RESET);
     }
 
     private void pause() {

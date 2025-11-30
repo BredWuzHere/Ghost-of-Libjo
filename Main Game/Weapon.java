@@ -32,6 +32,6 @@ public class Weapon extends Item {
         Move m = moves.get(moveIndex);
         m.perform(user, target, null);
         durability = Math.max(0, durability - 5);
-        if (durability == 0) System.out.println(name + " is now broken!");
+        if (durability == 0) System.out.println(Color.BRIGHT_RED + name + " is now broken!" + Color.RESET);
     }
 }
