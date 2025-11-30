@@ -7,7 +7,7 @@ public class NPCDatabase {
         NPC n;
         switch(id) {
             case "merchant":
-                n = new NPC("merchant", "Wandering Merchant");
+                n = new NPC("merchant", "Red the Quezonian Merchant");
                 n.addLine("Care to trade? I have wares from distant lands.");
                 n.addLine("Fresh goods! Rare trinkets for the discerning traveler.");
                 n.addOption("Buy a potion (free sample)", "hp_potion");
@@ -15,7 +15,7 @@ public class NPCDatabase {
                 n.addOption("Trade an old relic (not implemented)", null);
                 break;
             case "old_man":
-                n = new NPC("old_man", "Old Man by the Wall");
+                n = new NPC("old_man", "Matira the Old Mindoreno Man");
                 n.addLine("When I was young this place was different...");
                 n.addLine("The sea remembers more than we do.");
                 n.addOption("Listen to his tale", "relic_plus_ap");
@@ -23,7 +23,7 @@ public class NPCDatabase {
                 n.addOption("Ignore him", null);
                 break;
             case "mystic_child":
-                n = new NPC("mystic_child", "Mysterious Child");
+                n = new NPC("mystic_child", "Alwynno the Mysterious Quezonian");
                 n.addLine("Do you believe in fate?");
                 n.addLine("I can see the threads of your future... for a price.");
                 n.addOption("Accept the strange gift", "relic_crit");
@@ -31,7 +31,7 @@ public class NPCDatabase {
                 n.addOption("Ask for a blessing", "hp_potion");
                 break;
             default:
-                n = new NPC("traveler", "Quiet Traveler");
+                n = new NPC("traveler", "Quinto the Quiet Traveler");
                 n.addLine("Just passing through...");
                 n.addOption("Share a meal", "hp_potion");
                 n.addOption("Tell a joke", null);

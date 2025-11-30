@@ -7,7 +7,7 @@ public class Text {
     private static Map<Integer, String[]> roomLoreMap = new HashMap<>();
     private static Map<Integer, String[]> roomCutscenesMap = new HashMap<>();
     private static Map<Integer, String[]> regionTransitionsMap = new HashMap<>();
-     public static boolean roll(double chance) {
+    public static boolean roll(double chance) {
         return rnd.nextDouble() < chance;}
 
     // Boss taunts
