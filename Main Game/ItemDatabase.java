@@ -76,9 +76,9 @@ public class ItemDatabase {
                 StatusEffect jolt = new StatusEffect(StatusEffect.Kind.JOLT, "Jolts", "Electrifies enemies and stuns for a few HP/turn", 1, 100, 0.0);
     
                 Move m1 = new Move("equinox_slash", "Equinox Slash", "Obliterate Foes In One hit.", 0, 10.0, null, 0, ElementType.NONE);
-                 Move m2 = new Move("suayan_move", "Suayan Strike", "Trash talk the enemies.", 0, 100.6, jolt, 5, ElementType.ELECTRIC);
-                 w.addMove(m1); w.addMove(m2);
-             } else {
+                Move m2 = new Move("suayan_move", "Suayan Strike", "Trash talk the enemies.", 0, 100.6, jolt, 5, ElementType.ELECTRIC);
+                w.addMove(m1); w.addMove(m2);
+            } else {
                 Move m = new Move("bash","Bash","A simple bash.",2,1.0,null,0,ElementType.NONE); w.addMove(m);
             }
             return w;

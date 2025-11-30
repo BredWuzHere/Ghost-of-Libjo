@@ -42,4 +42,30 @@ public class Player extends Entity {
     public void heal(int amount) {
         super.heal(amount);
     }
+
+    // Backwards-compatible: default duration (3 turns)
+    public void addBuff(int amount) {
+        addBuff(amount, 3);
+    }
+
+    // New: add a defense buff that lasts a specific number of turns
+    public void addBuff(int amount, int turns) {
+        if (amount <= 0 || turns <= 0) return;
+        StatusEffect buff = new StatusEffect(StatusEffect.Kind.BUFF_DEFENSE, "Temporary Defense", "Increases armor by " + amount, turns, amount, 0.0);
+        applyStatus(buff);
+        System.out.println(getName() + " gains a buff of +" + amount + " armor for " + buff.getRemainingTurns() + " turns.");
+    }
+
+    // Add an attack buff (increases damage) — default duration 3 turns
+    public void addAttackBuff(int amount) {
+        addAttackBuff(amount, 3);
+    }
+
+    // Add an attack buff with specified duration
+    public void addAttackBuff(int amount, int turns) {
+        if (amount <= 0 || turns <= 0) return;
+        StatusEffect buff = new StatusEffect(StatusEffect.Kind.BUFF_ATTACK, "Temporary Offense", "Increases attack by " + amount, turns, amount, 0.0);
+        applyStatus(buff);
+        System.out.println(getName() + " gains a buff of +" + amount + " attack for " + buff.getRemainingTurns() + " turns.");
+    }
 }

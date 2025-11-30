@@ -47,6 +47,14 @@ public class Entity {
 
     public void applyStatus(StatusEffect s) {
         if (s == null) return;
+        // If this is a buff, apply its immediate effect (defense or attack)
+        if (s.getKind() == StatusEffect.Kind.BUFF_DEFENSE) {
+            this.armor += s.getIntValue();
+            System.out.println(name + " gains +" + s.getIntValue() + " armor from " + s.getName() + ".");
+        } else if (s.getKind() == StatusEffect.Kind.BUFF_ATTACK) {
+            this.damage += s.getIntValue();
+            System.out.println(name + " gains +" + s.getIntValue() + " attack from " + s.getName() + ".");
+        }
         activeStatuses.add(s.copy());
     }
 
@@ -62,7 +70,17 @@ public class Entity {
                 System.out.println(name + " suffers " + dmg + " burn damage from " + se.getName() + " (" + hp + "/" + maxHp + ")");
             }
             se.tick();
-            if (se.getRemainingTurns() <= 0) it.remove();
+            if (se.getRemainingTurns() <= 0) {
+                // If a buff expired, remove its effect
+                if (se.getKind() == StatusEffect.Kind.BUFF_DEFENSE) {
+                    this.armor = Math.max(0, this.armor - se.getIntValue());
+                    System.out.println(name + "'s buff " + se.getName() + " has expired. (-" + se.getIntValue() + " armor)");
+                } else if (se.getKind() == StatusEffect.Kind.BUFF_ATTACK) {
+                    this.damage = Math.max(0, this.damage - se.getIntValue());
+                    System.out.println(name + "'s buff " + se.getName() + " has expired. (-" + se.getIntValue() + " attack)");
+                }
+                it.remove();
+            }
         }
     }
 

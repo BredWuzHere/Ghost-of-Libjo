@@ -9,7 +9,9 @@ public class StatusEffect {
         JOLT,      
         POISON,    
         STUN,      
-        SLOW       
+        SLOW,      
+        BUFF_DEFENSE,
+        BUFF_ATTACK
     }
     
     private Kind kind;
