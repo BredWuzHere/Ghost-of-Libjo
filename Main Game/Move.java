@@ -48,7 +48,7 @@ public class Move {
         }
 
         int dmg = Math.max(1, (int)Math.round(baseDamage * damageMultiplier));
-        System.out.println(userName + " uses " + name + " — " + description);
+        System.out.println(Color.YELLOW + userName + " uses " + name + " — " + description + Color.RESET);
 
         switch (element) {
           case ELECTRIC:
@@ -61,14 +61,14 @@ public class Move {
             if (!et.isHit(1.0, pu.getSpeed())) break;
 
             et.takeDamage(dmg);
-            System.out.println("Electric shock jolts " + et.getName() + "! (" + dmg + " dmg)");
+            System.out.println(Color.BRIGHT_YELLOW + "Electric shock jolts " + et.getName() + "! (" + dmg + " dmg)" + Color.RESET);
 
             // 20% chance to inflict the JOLT status to the main enemy
             if (Math.random() < 0.20) {
                 StatusEffect s = new StatusEffect(StatusEffect.Kind.JOLT, "Jolted",
                         "Stunned briefly", 1, 0, 0.0);
                 et.applyStatus(s);
-                System.out.println(et.getName() + " is jolted and may skip a turn!");
+                System.out.println(Color.YELLOW + et.getName() + " is jolted and may skip a turn!" + Color.RESET);
             }
 
             // CHAIN JOLT LOGIC (PLAYER ONLY) 
@@ -127,14 +127,14 @@ public class Move {
                     Player pt = (Player) primaryTarget;
                     if (pt.avoidsAttackFrom(attackerSpeed)) break;
                     pt.takeDamage(dmg);
-                    System.out.println(pt.getName() + " is burned for " + dmg + " damage!");
+                    System.out.println(Color.BRIGHT_RED + pt.getName() + " is burned for " + dmg + " damage!" + Color.RESET);
                     StatusEffect burn = new StatusEffect(StatusEffect.Kind.BURN, "Burn", "Burning damage", statusDuration, Math.max(1,dmg/2), 0.0);
                     pt.applyStatus(burn);
                 } else if (primaryTarget instanceof Enemy) {
                     Enemy et = (Enemy) primaryTarget;
                     if (!et.isHit(1.0, attackerSpeed)) break;
                     et.takeDamage(dmg);
-                    System.out.println(et.getName() + " is burned for " + dmg + " damage!");
+                    System.out.println(Color.BRIGHT_RED + et.getName() + " is burned for " + dmg + " damage!" + Color.RESET);
                     StatusEffect burn = new StatusEffect(StatusEffect.Kind.BURN, "Burn", "Burning damage", statusDuration, Math.max(1,dmg/2), 0.0);
                     et.applyStatus(burn);
                 }

@@ -19,9 +19,9 @@ public class NPC {
     public void interact(Player player, Scanner in) {
         if (!lines.isEmpty()) {
             String intro = lines.get(new Random().nextInt(lines.size()));
-            System.out.println("\"" + intro + "\" — " + displayName);
+            System.out.println(Color.BLUE + "\"" + intro + "\" — " + displayName + Color.RESET);
         } else {
-            System.out.println(displayName + " has nothing to say.");
+            System.out.println(Color.BRIGHT_BLACK + displayName + " has nothing to say." + Color.RESET);
         }
 
         System.out.println("\nWhat will you say/do?");
@@ -40,7 +40,7 @@ public class NPC {
         if (choice < 1 || choice > idx) choice = idx;
 
         if (choice == idx) {
-            System.out.println(displayName + " nods and goes on their way.");
+            System.out.println(Color.BLUE + displayName + " nods and goes on their way." + Color.RESET);
             return;
         }
 
@@ -56,7 +56,7 @@ public class NPC {
             Item it = ItemDatabase.createItem(rewardId);
             if (it != null) {
                 player.getInventory().add(it);
-                System.out.println(displayName + ": \"Here, take this — " + it.getName() + ".\" (added to inventory)");
+                System.out.println(Color.GREEN + displayName + ": \"Here, take this — " + it.getName() + ".\" (added to inventory)" + Color.RESET);
             } else {
                 System.out.println(displayName + ": \"I intended to give you something, but it seems lost.\"");
             }
