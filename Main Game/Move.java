@@ -55,7 +55,7 @@ public class Move {
     if (user instanceof Player) {
         Player pu = (Player) user;
 
-        // --- MAIN TARGET ---
+        // MAIN TARGET 
         if (primaryTarget instanceof Enemy) {
             Enemy et = (Enemy) primaryTarget;
             if (!et.isHit(1.0, pu.getSpeed())) break;
@@ -71,7 +71,7 @@ public class Move {
                 System.out.println(et.getName() + " is jolted and may skip a turn!");
             }
 
-            // --- CHAIN JOLT LOGIC (PLAYER ONLY) ---
+            // CHAIN JOLT LOGIC (PLAYER ONLY) 
             if (otherEnemies != null && !otherEnemies.isEmpty()) {
                 int count = Math.min(3, otherEnemies.size()); // max 3 enemies get chain dmg
                 double chainRate = (otherEnemies.size() <= 2 ? 0.30 : 0.10);
@@ -90,7 +90,6 @@ public class Move {
                             " for " + chainDmg + " damage!");
                     chainTarget.takeDamage(chainDmg);
 
-                    // Each chained enemy has 10% chance to receive JOLT
                     if (Math.random() < 0.10) {
                         StatusEffect s2 = new StatusEffect(StatusEffect.Kind.JOLT, "Jolted",
                                 "Stunned briefly", 1, 0, 0.0);
@@ -103,7 +102,6 @@ public class Move {
         }
     }
 
-    // --- ENEMY USING ELECTRIC MOVE AGAINST PLAYER ---
     else if (user instanceof Enemy) {
         Enemy eu = (Enemy) user;
         if (primaryTarget instanceof Player) {

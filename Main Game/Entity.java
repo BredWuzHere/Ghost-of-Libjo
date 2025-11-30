@@ -1,4 +1,3 @@
-// Patched Entity.java - unified status handling, effective armor, speed-based dodge
 import java.util.*;
 
 public class Entity {
@@ -36,13 +35,13 @@ public class Entity {
     public boolean isAlive(){ return hp > 0; }
 
     /**
-     * Effective armor after status modifiers (ARMOR_DOWN reduces armor by intValue).
+     * Effective armor after status modifiers.
      */
     public int getEffectiveArmor() {
         int armorMod = 0;
         for (StatusEffect se : activeStatuses) {
             if (se.getKind() == StatusEffect.Kind.ARMOR_DOWN) {
-                armorMod -= se.getIntValue(); // intValue is how much to lower armor
+                armorMod -= se.getIntValue(); 
             }
         }
         int eff = armor + armorMod;
@@ -68,10 +67,9 @@ public class Entity {
     public List<StatusEffect> getActiveStatuses(){ return activeStatuses; }
 
     /**
-     * Process status effects at the start of the entity's turn:
-     * - Apply BURN/POISON damage per tick
-     * - Tick down durations and remove expired effects
-     * - Print messages for relevant effects
+     * process status effects at the start of the entity's turn:
+     * - apply BURN/POISON damage per tick
+     * - tick down durations and remove expired effects
      */
     public void processStatusEffectsStartTurn() {
         Iterator<StatusEffect> it = activeStatuses.iterator();
@@ -98,7 +96,7 @@ public class Entity {
                 case SLIPPERY:
                 case GENERIC:
                 case STUN:
-                    // No tick damage — effect used by other calculations (hasStatusEffect/getEffectiveArmor/avoidsAttackFrom)
+                    // no tick damage  effect used by other calculations (hasStatusEffect/getEffectiveArmor/avoidsAttackFrom)
                     break;
             }
             se.tick();
@@ -123,10 +121,10 @@ public class Entity {
     }
 
     /**
-     * Returns true if an incoming attack is avoided (misses) based on:
+     * returns true if an incoming attack is avoided (misses) based on:
      * - the target's SLIPPERY status sum,
      * - speed difference (target.speed - attackerSpeed) * scalar
-     * Scalar currently 0.02 (2% per speed point). Clamp between 0.0 and 0.95.
+     * scalar currently 0.02 (2% per speed point). Clamp between 0.0 and 0.95.
      */
     public boolean avoidsAttackFrom(int attackerSpeed) {
         double statusEvasion = activeStatuses.stream()
@@ -135,7 +133,7 @@ public class Entity {
             .sum();
 
         double speedDiff = (double)this.speed - (double)attackerSpeed;
-        double speedModifier = speedDiff * 0.02; // tweakable scalar
+        double speedModifier = speedDiff * 0.02; 
 
         double totalMissChance = statusEvasion + speedModifier;
         totalMissChance = Math.max(0.0, Math.min(0.95, totalMissChance));

@@ -1,4 +1,3 @@
-// Patched Enemy.java - uses unified statuses and speed/evasion math
 import java.util.*;
 
 public class Enemy extends Entity {
@@ -14,14 +13,9 @@ public class Enemy extends Entity {
     public void addMove(Move m){ moves.add(m); }
     public List<Move> getMoves(){ return moves; }
 
-    /**
-     * Check whether an attack from an attacker of given speed hits this enemy.
-     * accuracy currently unused but left for future use.
-     */
     public boolean isHit(double accuracy, int attackerSpeed) {
         double currentEvasion = this.evasion;
 
-        // status-based SLIPPERY adds to evasion
         double effectEvasionBonus = getActiveStatuses().stream()
             .filter(e -> e.getKind() == StatusEffect.Kind.SLIPPERY)
             .mapToDouble(StatusEffect::getDblValue)
@@ -38,16 +32,16 @@ public class Enemy extends Entity {
 
         if (Math.random() < currentEvasion) {
             System.out.println(getName() + " avoided the attack! (missChance=" + String.format("%.2f", currentEvasion) + ")");
-            return false; // Miss
+            return false; // miss
         }
-        return true; // Hit
+        return true; // hit
     }
 
     /**
-     * Process statuses and take a turn. Uses unified status handling in Entity.
+     * process statuses and take a turn uses unified status handling in Entity.
      */
     public void takeTurn(Player player) {
-        processStatusEffectsStartTurn(); // will process DOTs / ticks
+        processStatusEffectsStartTurn(); // process DOTs / ticks
         if (!isAlive()) return;
         if (hasStatusEffect(StatusEffect.Kind.STUN)) {
             System.out.println(getName() + " is stunned and cannot act this turn.");

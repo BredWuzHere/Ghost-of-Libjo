@@ -72,7 +72,6 @@ public class ItemDatabase {
                 w.addMove(m1); w.addMove(m2);
 
             } else if ("dev_sword".equals(id)) {
-    // FIX: Added the specific enum value JOLT
                 StatusEffect jolt = new StatusEffect(StatusEffect.Kind.JOLT, "Jolts", "Electrifies enemies and stuns for a few HP/turn", 1, 100, 0.0);
     
                 Move m1 = new Move("equinox_slash", "Equinox Slash", "Obliterate Foes In One hit.", 0, 10.0, null, 0, ElementType.NONE);

@@ -1,5 +1,4 @@
 public class StatusEffect {
-    // Updated Kind enum with JOLT, POISON, STUN, SLOW, and SLIPPERY for evasion
     public enum Kind { 
         BURN, 
         GENERIC, 
