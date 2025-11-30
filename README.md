@@ -208,18 +208,8 @@ Development Updates
 
 **11/15/2025 — (vltairee-jpg)**
 ---------------------------
-- **Console UI colorization**: Added a central `Color.java` with ANSI codes and updated many game classes to print colorized messages (damage, healing, buffs, HUD, map legend) for improved readability in terminals.
-- **Buff system (defense & attack)**: Implemented explicit buff kinds (`BUFF_DEFENSE`, `BUFF_ATTACK`) in `StatusEffect`, added `Player.addBuff(...)` and `Player.addAttackBuff(...)`, and applied/reverted buff effects inside `Entity` lifecycle so buffs take effect immediately and expire automatically.
-- **Consumable overhaul**: Replaced `if` chains with an enhanced `switch` in `Consumable.use(...)`, enforced non-null `ConsumableType`, and made consumables apply defence/attack buffs for a random duration (2–3 turns) in addition to heals.
-- **Per-turn HUD & cleared-turn flow**: Added `displayTurnStatus()` and integrated `clearScreen()` calls so the screen refreshes each turn and shows the player's current HUD cleanly between actions.
-- **Map rendering polish**: `InstanceGame.renderMap()` now colorizes tokens: player (`[P]`) bright green, enemies (`[E]`) bright red, and unexplored tiles are light grey (bright black) for better contrast.
-- **Status-effect lifecycle & processing**: `Entity.processStatusEffectsStartTurn()` was centralized to tick DOTs (POISON, BURN, JOLT), handle STUN/SLOW, and revert buffed stats when effects expire.
-- **Combat & stacking behavior**: Buffs currently stack additively (multiple consumables increase the same stat); expiration correctly reverts only the amount each buff applied. Consider changing to a refresh-on-reapply model if desired.
-- **Title experiments & UX choices**: Several ASCII title experiments were tried and then reverted to the simpler original at the user's request.
-- **Repository housekeeping**: Resolved a merge conflict in `Main Game/Entity.java` and removed a temporary `pom.xml` that had been added earlier to aid tooling — the repository was committed in a clean merged state.
+# CONCEPTUALIZED STORYLINE, ADDED AND IMPLEMENTED NEW FEATURES
 
-**11/15/2025 — (vltairee-jpg)**
----------------------------
 - **Console UI colorization**: Added a central `Color.java` with ANSI codes and updated many game classes to print colorized messages (damage, healing, buffs, HUD, map legend) for improved readability in terminals.
 - **Buff system (defense & attack)**: Implemented explicit buff kinds (`BUFF_DEFENSE`, `BUFF_ATTACK`) in `StatusEffect`, added `Player.addBuff(...)` and `Player.addAttackBuff(...)`, and applied/reverted buff effects inside `Entity` lifecycle so buffs take effect immediately and expire automatically.
 - **Consumable overhaul**: Replaced `if` chains with an enhanced `switch` in `Consumable.use(...)`, enforced non-null `ConsumableType`, and made consumables apply defence/attack buffs for a random duration (2–3 turns) in addition to heals.
@@ -228,7 +218,6 @@ Development Updates
 - **Status-effect lifecycle & processing**: `Entity.processStatusEffectsStartTurn()` was centralized to tick DOTs (POISON, BURN, JOLT), handle STUN/SLOW, and revert buffed stats when effects expire.
 - **Combat & stacking behavior**: Buffs currently stack additively (multiple consumables increase the same stat); expiration correctly reverts only the amount each buff applied. Consider changing to a refresh-on-reapply model if desired.
 - **Title experiments & UX choices**: Several ASCII title experiments were tried and then reverted to the simpler original at the user's request.
-- **Repository housekeeping**: Resolved a merge conflict in `Main Game/Entity.java` and removed a temporary `pom.xml` that had been added earlier to aid tooling — the repository was committed in a clean merged state.
 
 Notes:
 - Many weapon items include predefined `Move` entries (e.g., `fire_staff` has `Fire Burst` and `Ember Slap` with a Burn effect).  
