@@ -109,7 +109,6 @@ public class Entity {
             }
             se.tick();
             if (se.getRemainingTurns() <= 0) {
-<<<<<<< HEAD
                 // If a buff expired, remove its effect
                 if (se.getKind() == StatusEffect.Kind.BUFF_DEFENSE) {
                     this.armor = Math.max(0, this.armor - se.getIntValue());
@@ -118,8 +117,6 @@ public class Entity {
                     this.damage = Math.max(0, this.damage - se.getIntValue());
                     System.out.println(name + "'s buff " + se.getName() + " has expired. (-" + se.getIntValue() + " attack)");
                 }
-=======
->>>>>>> ac81ad4dd2b9dacba1e9a9d9593f48c022a8b1f6
                 it.remove();
             }
         }
