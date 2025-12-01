@@ -11,8 +11,8 @@ public class NPCDatabase {
                 n.addLine("Care to trade? I have wares from distant lands.");
                 n.addLine("Fresh goods! Rare trinkets for the discerning traveler.");
                 n.addOption("Buy a potion (free sample)", "hp_potion");
-                n.addOption("Ask about rumors", null);
-                n.addOption("Trade an old relic (not implemented)", null);
+                n.addOption("Want some beer?6", "red_horse");
+                n.addOption("Trade an old relic (not implemented)", "extra_rice");
                 break;
             case "old_man":
                 n = new NPC("old_man", "Matira the Old Mindoreno Man");
@@ -42,9 +42,9 @@ public class NPCDatabase {
 
     public static NPC createRandomNPCForRegion(int region) {
         String[] pool;
-        if (region == 1) pool = new String[] {"merchant","old_man","traveler"};
-        else if (region == 2) pool = new String[] {"mystic_child","merchant","traveler"};
-        else pool = new String[] {"merchant","mystic_child","old_man"};
+        if (region == 1) pool = new String[] {"merchant","old_man","traveler", "mystic_child"};
+        else if (region == 2) pool = new String[] {"merchant","old_man","traveler", "mystic_child"};
+        else pool = new String[] {"merchant","old_man","traveler", "mystic_child"};
         String id = pool[rnd.nextInt(pool.length)];
         return createNPC(id);
     }

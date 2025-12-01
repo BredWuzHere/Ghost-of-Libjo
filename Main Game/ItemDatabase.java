@@ -34,6 +34,23 @@ public class ItemDatabase {
         prototypes.put("blade_of_hepatytis", new Weapon("blade_of_hepatytis","Blade of Hepatytis","penetration.", 18, 0.10, 1.2, 100, ElementType.NONE));
         prototypes.put("fishball_stick", new Weapon("fishball_stick","Fishball Stick Stabber","small but terrible", 16, 0.12, 1.4, 100, ElementType.NONE));
         prototypes.put("electricfan_blade", new Weapon("electricfan_blade","Electric Fan Blade Toss", "Sharp fan blade. Hard to aim but deadly.",   35, 0.05, 0.9, 100, ElementType.NONE));
+prototypes.put("bolo_blade",
+        new Weapon("bolo_blade","Bolo Blade","Pang-gubat. Pang-gulod. Pang-laban.",10,0.10,1.5,110,ElementType.NONE));
+prototypes.put("kampilan",
+        new Weapon("kampilan","Kampilan","Isang mabigat na talim para sa tunay na datu vibes.",14,0.07,1.7,120,ElementType.NONE));
+prototypes.put("itak",
+        new Weapon("itak","Itak","Mabilis at brutal. Amoy niyog at gera.",12,0.12,1.6,100,ElementType.NONE));
+prototypes.put("ginunting",
+        new Weapon("ginunting","Ginunting","Curved blade—pang hiwa, pang punit.",18,0.10,1.8,120,ElementType.NONE));
+prototypes.put("tsinelas",
+        new Weapon("tsinelas","Tsinelas of Justice","Walang takas. Target locked.",8,0.20,2.0,70,ElementType.NONE));
+prototypes.put("walis_tambo",
+        new Weapon("walis_tambo","Walis Tambo","Linisin ang kalaban, hindi ang sahig.",9,0.08,1.5,90,ElementType.NONE));
+prototypes.put("kris_volcano",
+        new Weapon("kris_volcano","Kris of Taal","Umiinit ang hangin. Umiinit ang laban.",20,0.08,1.7,110,ElementType.FIRE));
+prototypes.put("tuba_dagger",
+        new Weapon("tuba_dagger","Tuba Dagger","Lasing-lason. Isang tusok, isang problema.",13,0.14,1.6,90,ElementType.POISON));
+
     }
 
     public static void setStage(int stage) { currentStage = Math.max(1, stage); }
