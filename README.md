@@ -4,7 +4,7 @@ Ghost-of-Libjo
 *Explore Batangas City , collect relics, craft builds, and survive procedurally tense encounters.*
 
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Java](https://img.shields.io/badge/Java-17%2B-orange?logo=java&logoColor=white)](https://adoptopenjdk.net/) [![Turn-based RPG](https://img.shields.io/badge/Genre-Turn-based%20RPG-blue?logo=gamepad&logoColor=white)](https://en.wikipedia.org/wiki/Role-playing_video_game)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Java](https://img.shields.io/badge/Java-17%2B-orange?logo=java&logoColor=white)](https://adoptopenjdk.net/) [![RPG](https://img.shields.io/badge/Genre-RPG-blue?logo=gamepad&logoColor=white)](https://en.wikipedia.org/wiki/Role-playing_video_game)
 
 
 
