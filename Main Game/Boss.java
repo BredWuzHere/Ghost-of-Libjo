@@ -1,4 +1,3 @@
-import java.util.*;
 
 public class Boss extends Enemy {
     private int stageLevel;
@@ -14,6 +13,22 @@ public class Boss extends Enemy {
         
     }
     
+    
+    /**
+     * @return The stage level this boss is associated with.
+     */
+    public int getStageLevel() {
+        return stageLevel;
+    }
+
+    /**
+     * @return The chance for this boss to drop items upon defeat.
+     */
+    public double getDropChance() {
+        return dropChance;
+    }
+    
+    
     @Override 
     public void takeTurn(Player player) {
         processStatusEffectsStartTurn();
@@ -21,7 +36,8 @@ public class Boss extends Enemy {
         if (!isAlive()) return; // chckng if dot killed 
         if (hasStatusEffect(StatusEffect.Kind.STUN)) return; // Chck if stunned
 
-        Random rnd = new Random();
+
+        
         while (ap>0 && isAlive() && player.isAlive()) {
             
             // greedy boss actions spend high ap

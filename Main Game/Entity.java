@@ -83,6 +83,8 @@ public class Entity {
         Iterator<StatusEffect> it = activeStatuses.iterator();
         while (it.hasNext()) {
             StatusEffect se = it.next();
+            
+            // --- FIX: Added BUFF_DEFENSE and BUFF_ATTACK to the switch ---
             switch (se.getKind()) {
                 case BURN:
                     int burnDmg = se.getIntValue();
@@ -104,9 +106,13 @@ public class Entity {
                 case SLIPPERY:
                 case GENERIC:
                 case STUN:
-                    // no tick damage  effect used by other calculations (hasStatusEffect/getEffectiveArmor/avoidsAttackFrom)
+                case BUFF_DEFENSE: // Added case to resolve warning
+                case BUFF_ATTACK:  // Added case to resolve warning
+                    // no tick damage; effect used by other calculations
                     break;
             }
+            // -------------------------------------------------------------
+
             se.tick();
             if (se.getRemainingTurns() <= 0) {
                 // If a buff expired, remove its effect
