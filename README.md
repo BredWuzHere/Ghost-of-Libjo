@@ -92,7 +92,7 @@ Testing & Verification
 
 Development Updates
 
-**11/11/2025 (Bred)**
+**11/11/2025 (Bred & vltairee-jpg)**
 •	Kickoff, architecture & containers
 •	Created the high-level plan for the combat refactor and wrote acceptance criteria for HUD, status effects, and multi-enemy encounters.
 •	Implemented Item / Inventory Containers: `ItemContainer` and refactored `Player` inventory to use containers for Weapons, Armor, Consumables, Relics, and misc Items.
@@ -124,7 +124,7 @@ Development Updates
   - Ensure room lore prints with a pause so players can read it.
 •	Playtest: Verified multiple enemy spawn distribution roughly matches probabilities; trimmed lists to cap at 5.
 
-**11/13/2025 — (Bred)**
+**11/13/2025 — (Bred & Aaronshikii)**
 •	Major System Overhaul (Text System and Item Data Fix)
 •	Combat & Core Systems
   - Completely refactored the entire combat system for smoother turn handling and clearer flow.
@@ -149,7 +149,7 @@ Development Updates
   - Items and monster moves can now apply status effects (e.g., poison from a consumable, stun from an attack).
   - Relics and armors grant passive bonuses like crit chance, resistances, or AP boosts.
 
-**11/14/2025 — (Bred)**
+**11/14/2025 — (Bred & Aaronshikii)**
 •	Refining Character Stats & Status Effect System
 •	Expanded `StatusEffect.Kind`: Added new dynamic status effect types for robust combat:
   - `JOLT` — electric, chaining, or stunning effects.
@@ -165,7 +165,7 @@ Development Updates
   - Updated the base `Enemy` class to include methods for managing status effects (`addStatusEffect`, `hasStatusEffect`) and processing their effects at the start of a turn (`processStatusEffectsStartTurn()`).
   - Modified the `takeTurn()` method to check for death (from DOT) and `STUN` effects, skipping the turn if necessary.
 
-**11/15/2025 — (Bred)**
+**11/15/2025 — (Bred & vltairee-jpg)**
 •	Database & Constructor Sync
 •	Enemy Database Initialization:
   - Refactored the `EnemyDatabase.createEnemy(...)` function to include the new `evasion` stat (as the 8th parameter for `SimpleEnemy` and the 10th parameter for `Boss`) for all defined enemy and boss types.
@@ -176,7 +176,7 @@ Development Updates
   - Updated all enemy moves in `EnemyDatabase.createEnemy(...)` that used the generic `StatusEffect.Kind.GENERIC` to use the appropriate dedicated kinds (`STUN`, `JOLT`, `CRIT_DOWN`, `ARMOR_DOWN`) for clearer combat intent.
 
 
-**11/30/25 - (Aaron)**
+**11/30/25 - (Aaron & vltairee-jpg)**
 - **`iron_sword`**: `Iron Sword` — A sturdy iron sword. (Weapon)
 - **`fire_staff`**: `Fire Staff` — A staff imbued with flame; includes fire moves and a burn status effect. (Weapon)
 - **`leather_armor`**: `Leather Armor` — Light protective leather. (Armor)
@@ -206,7 +206,7 @@ Development Updates
 - **`fishball_stick`**: `Fishball Stick Stabber` — Small but terrible. (Weapon)
 - **`electricfan_blade`**: `Electric Fan Blade Toss` — Sharp fan blade. Hard to aim but deadly (has electric-themed move). (Weapon)
 
-**11/15/2025 — (vltairee-jpg)**
+**11/15/2025 — (vltairee-jpg & Aaronshikii)**
 ---------------------------
 # CONCEPTUALIZED STORYLINE, ADDED AND IMPLEMENTED NEW FEATURES
 
