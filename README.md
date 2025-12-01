@@ -1,10 +1,10 @@
 Ghost-of-Libjo
-*A text-based roguelike RPG focused on tactical combat, status effects, & emergent multi-enemy encounters.
+ text-based roguelike RPG focused on tactical combat, status effects, & emergent multi-enemy encounters.
 
 *Explore Batangas City , collect relics, craft builds, and survive procedurally tense encounters.*
 
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Java](https://img.shields.io/badge/Java-17%2B-orange?logo=java&logoColor=white)](https://adoptopenjdk.net/) [![RPG](https://img.shields.io/badge/Genre-RPG-blue?logo=gamepad&logoColor=white)](https://en.wikipedia.org/wiki/Role-playing_video_game)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Java](https://img.shields.io/badge/Java-17%2B-orange?logo=java&logoColor=white)](https://adoptopenjdk.net/) [![Turn-based RPG](https://img.shields.io/badge/Genre-Turn-based%20RPG-blue?logo=gamepad&logoColor=white)](https://en.wikipedia.org/wiki/Role-playing_video_game)
 
 
 
@@ -106,7 +106,7 @@ Development Updates
 •	Added basic hooks to `InstanceGame` where the HUD, combat loop, and spawn code will plug in.
 •	Tests / verification: Manual smoke tests for inventory add/remove and container boundaries.
 
-**11/12/2025 (Bred)**
+**11/12/2025 (Bred & Liuwat- jpg martinez)**
 •	Make systems dynamic — status effects, moves, spawn rules
 •	Turned skeletons into working systems:
   - Implemented `StatusEffect` logic (int/double values, tick, expiration) and `processStatusEffectsStartTurn()` on `Player`.
@@ -150,7 +150,7 @@ Development Updates
   - Items and monster moves can now apply status effects (e.g., poison from a consumable, stun from an attack).
   - Relics and armors grant passive bonuses like crit chance, resistances, or AP boosts.
 
-**11/14/2025 — (Bred & Aaronshikii)**
+**11/14/2025 — (Bred & Aaronshikii & Liuwat - jpg martinez)**
 •	Refining Character Stats & Status Effect System
 •	Expanded `StatusEffect.Kind`: Added new dynamic status effect types for robust combat:
   - `JOLT` — electric, chaining, or stunning effects.
@@ -207,7 +207,7 @@ Development Updates
 - **`fishball_stick`**: `Fishball Stick Stabber` — Small but terrible. (Weapon)
 - **`electricfan_blade`**: `Electric Fan Blade Toss` — Sharp fan blade. Hard to aim but deadly (has electric-themed move). (Weapon)
 
-**11/15/2025 — (vltairee-jpg & Aaronshikii)**
+**11/15/2025 — (vltairee-jpg & Aaronshikii & Liuwat - jpg martinez)**
 ---------------------------
 # CONCEPTUALIZED STORYLINE, ADDED AND IMPLEMENTED NEW FEATURES
 
